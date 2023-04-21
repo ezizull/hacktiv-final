@@ -20,8 +20,13 @@ func UserRoutes(router *gin.RouterGroup, controller *userController.Controller) 
 	routerAuth.Use(middlewares.AuthJWTMiddleware())
 	{
 		routerAuth.GET("/:id", controller.GetUsersByID)
-		routerAuth.GET("", controller.GetAllUsers)
 		routerAuth.PUT("/:id", controller.UpdateUser)
 		routerAuth.DELETE("/:id", controller.DeleteUser)
+	}
+
+	// admin role
+	routerAuth.Use(middlewares.AuthRoleMiddleware([]string{"admin"}))
+	{
+		routerAuth.GET("", controller.GetAllUsers)
 	}
 }
