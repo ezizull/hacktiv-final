@@ -149,6 +149,9 @@ func (c *Controller) GetPhotoByID(ctx *gin.Context) {
 // @Failure 500 {object} controllers.MessageResponse
 // @Router /photo/{photo_id} [get]
 func (c *Controller) UpdatePhoto(ctx *gin.Context) {
+	// Get your object from the context
+	authData := ctx.MustGet("Auth").(security.Claims)
+
 	photoID, err := strconv.Atoi(ctx.Param("id"))
 	if err != nil {
 		appError := errorDomain.NewAppError(errors.New("param id is necessary in the url"), errorDomain.ValidationError)
@@ -170,10 +173,20 @@ func (c *Controller) UpdatePhoto(ctx *gin.Context) {
 		return
 	}
 
-	photo, err := c.PhotoService.Update(photoID, request)
-	if err != nil {
-		_ = ctx.Error(err)
-		return
+	var photo *photoDomain.Photo
+
+	if authData.Role == "admin" {
+		photo, err = c.PhotoService.Update(photoID, request)
+		if err != nil {
+			_ = ctx.Error(err)
+			return
+		}
+	} else {
+		photo, err = c.PhotoService.UserUpdate(photoID, authData.UserID, request)
+		if err != nil {
+			_ = ctx.Error(err)
+			return
+		}
 	}
 
 	ctx.JSON(http.StatusOK, photo)

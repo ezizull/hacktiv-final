@@ -83,3 +83,9 @@ func (s *Service) Update(id int, updatePhoto photoDomain.UpdatePhoto) (*photoDom
 	photo := updatePhoto.ToDomainMapper()
 	return s.PhotoRepository.Update(id, &photo)
 }
+
+// Update is a function that updates a photo by id
+func (s *Service) UserUpdate(id int, userId int, updatePhoto photoDomain.UpdatePhoto) (*photoDomain.Photo, error) {
+	photo := updatePhoto.ToDomainMapper()
+	return s.PhotoRepository.UserUpdate(id, userId, &photo)
+}

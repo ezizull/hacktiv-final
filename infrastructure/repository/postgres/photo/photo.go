@@ -192,6 +192,39 @@ func (r *Repository) Update(id int, updatePhoto *photoDomain.Photo) (*photoDomai
 	return photo.ToDomainMapper(), err
 }
 
+// UserUpdate ... UserUpdate photo
+func (r *Repository) UserUpdate(id int, userId int, updatePhoto *photoDomain.Photo) (*photoDomain.Photo, error) {
+	var photo photoDomain.Photo
+
+	photo.ID = id
+	photo.UserID = userId
+	err := r.DB.Model(&photo).
+		Updates(updatePhoto).Error
+
+	// err = config.DB.Save(photo).Error
+	if err != nil {
+		byteErr, _ := json.Marshal(err)
+		var newError errorDomain.GormErr
+		err = json.Unmarshal(byteErr, &newError)
+		if err != nil {
+			return &photoDomain.Photo{}, err
+		}
+		switch newError.Number {
+		case 1062:
+			err = errorDomain.NewAppErrorWithType(errorDomain.ResourceAlreadyExists)
+			return &photoDomain.Photo{}, err
+
+		default:
+			err = errorDomain.NewAppErrorWithType(errorDomain.UnknownError)
+			return &photoDomain.Photo{}, err
+		}
+	}
+
+	err = r.DB.Where("id = ?", id).First(&photo).Error
+
+	return photo.ToDomainMapper(), err
+}
+
 // Delete ... Delete photo
 func (r *Repository) Delete(id int) (err error) {
 	tx := r.DB.Delete(&photoDomain.Photo{}, id)
