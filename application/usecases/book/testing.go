@@ -18,6 +18,6 @@ type BookTesting interface {
 
 func NewTesting(bookTest bookRepository.BookTesting) BookTesting {
 	return &Service{
-		bookTesting: bookTest,
+		BookTesting: bookTest,
 	}
 }

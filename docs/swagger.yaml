@@ -79,6 +79,68 @@ definitions:
       user_id:
         type: integer
     type: object
+  photo.NewPhoto:
+    properties:
+      caption:
+        example: caption
+        type: string
+      photo_url:
+        example: www.photo.com
+        type: string
+      title:
+        example: title
+        type: string
+      user_id:
+        type: integer
+    required:
+    - photo_url
+    - title
+    - user_id
+    type: object
+  photo.PaginationResultPhoto:
+    properties:
+      current:
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/photo.Photo'
+        type: array
+      limit:
+        type: integer
+      nextCursor:
+        type: integer
+      numPages:
+        type: integer
+      prevCursor:
+        type: integer
+      total:
+        type: integer
+    type: object
+  photo.Photo:
+    properties:
+      caption:
+        example: caption
+        type: string
+      created_at:
+        example: "2021-02-24 20:19:39"
+        type: string
+      deletedAt:
+        type: string
+      id:
+        example: 1099
+        type: integer
+      photo_url:
+        example: www.photo.com
+        type: string
+      title:
+        example: title
+        type: string
+      updated_at:
+        example: "2021-02-24 20:19:39"
+        type: string
+      user_id:
+        type: integer
+    type: object
   user.DataSecurityAuthenticated:
     properties:
       expirationAccessDateTime:
@@ -316,6 +378,85 @@ paths:
       summary: Get books by ID
       tags:
       - book
+  /photo:
+    get:
+      description: Get all Photos on the system
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/photo.PaginationResultPhoto'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.MessageResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.MessageResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get all Photos
+      tags:
+      - photo
+    post:
+      consumes:
+      - application/json
+      description: Create new photo on the system
+      parameters:
+      - description: body data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/photo.NewPhoto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/photo.Photo'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.MessageResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.MessageResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Create New PhotoName
+      tags:
+      - photo
+  /photo/{photo_id}:
+    get:
+      description: Get Photos by ID on the system
+      parameters:
+      - description: id of photo
+        in: path
+        name: photo_id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.MessageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.MessageResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.MessageResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get photos by ID
+      tags:
+      - photo
   /user:
     get:
       description: Get all Users on the system

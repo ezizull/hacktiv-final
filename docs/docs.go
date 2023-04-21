@@ -224,6 +224,132 @@ const docTemplate = `{
                 }
             }
         },
+        "/photo": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get all Photos on the system",
+                "tags": [
+                    "photo"
+                ],
+                "summary": "Get all Photos",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/photo.PaginationResultPhoto"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.MessageResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.MessageResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Create new photo on the system",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "photo"
+                ],
+                "summary": "Create New PhotoName",
+                "parameters": [
+                    {
+                        "description": "body data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/photo.NewPhoto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/photo.Photo"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.MessageResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.MessageResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/photo/{photo_id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get Photos by ID on the system",
+                "tags": [
+                    "photo"
+                ],
+                "summary": "Get photos by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id of photo",
+                        "name": "photo_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.MessageResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.MessageResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.MessageResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/user": {
             "get": {
                 "security": [
@@ -468,6 +594,95 @@ const docTemplate = `{
                 },
                 "updatedAt": {
                     "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "photo.NewPhoto": {
+            "type": "object",
+            "required": [
+                "photo_url",
+                "title",
+                "user_id"
+            ],
+            "properties": {
+                "caption": {
+                    "type": "string",
+                    "example": "caption"
+                },
+                "photo_url": {
+                    "type": "string",
+                    "example": "www.photo.com"
+                },
+                "title": {
+                    "type": "string",
+                    "example": "title"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "photo.PaginationResultPhoto": {
+            "type": "object",
+            "properties": {
+                "current": {
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/photo.Photo"
+                    }
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "nextCursor": {
+                    "type": "integer"
+                },
+                "numPages": {
+                    "type": "integer"
+                },
+                "prevCursor": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "photo.Photo": {
+            "type": "object",
+            "properties": {
+                "caption": {
+                    "type": "string",
+                    "example": "caption"
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2021-02-24 20:19:39"
+                },
+                "deletedAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1099
+                },
+                "photo_url": {
+                    "type": "string",
+                    "example": "www.photo.com"
+                },
+                "title": {
+                    "type": "string",
+                    "example": "title"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2021-02-24 20:19:39"
                 },
                 "user_id": {
                     "type": "integer"

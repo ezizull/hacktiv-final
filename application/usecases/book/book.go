@@ -9,7 +9,7 @@ import (
 
 // Service is a struct that contains the repository implementation for book use case
 type Service struct {
-	bookTesting    bookRepository.BookTesting
+	BookTesting    bookRepository.BookTesting
 	BookRepository bookRepository.Repository
 	UserRepository userRepository.Repository
 }

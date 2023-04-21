@@ -1,11 +1,11 @@
-package book
+package photo
 
 import (
 	"testing"
 
-	bookUsecase "hacktiv/final-project/application/usecases/book"
+	photoUsecase "hacktiv/final-project/application/usecases/photo"
 	errorDomain "hacktiv/final-project/domain/errors"
-	bookRepository "hacktiv/final-project/infrastructure/repository/postgres/book"
+	photoRepository "hacktiv/final-project/infrastructure/repository/postgres/photo"
 
 	"github.com/stretchr/testify/suite"
 	"gorm.io/driver/postgres"
@@ -15,8 +15,8 @@ import (
 
 type IntTestSuite struct {
 	suite.Suite
-	db       *gorm.DB
-	bookCase bookUsecase.Service
+	db        *gorm.DB
+	photoCase photoUsecase.Service
 }
 
 func TestIntTestSuite(t *testing.T) {
@@ -37,11 +37,11 @@ func (its *IntTestSuite) SetupSuite() {
 
 	inDB = setupDatabase(its, inDB)
 
-	bookRepo := bookRepository.Repository{DB: inDB}
-	bookCase := bookUsecase.Service{BookRepository: bookRepo}
+	photoRepo := photoRepository.Repository{DB: inDB}
+	photoCase := photoUsecase.Service{PhotoRepository: photoRepo}
 
 	its.db = inDB
-	its.bookCase = bookCase
+	its.photoCase = photoCase
 }
 
 func (its *IntTestSuite) BeforeTest(suiteName, testName string) {
@@ -60,7 +60,7 @@ func (its *IntTestSuite) TearDownTest() {
 }
 
 func (its *IntTestSuite) TestGetByID() {
-	actual, err := its.bookCase.GetByID(1)
+	actual, err := its.photoCase.GetByID(1)
 
 	its.Nil(err)
 	its.Equal(uint(1), actual.ID)
@@ -68,7 +68,7 @@ func (its *IntTestSuite) TestGetByID() {
 }
 
 func (its *IntTestSuite) TestGetByID_Error() {
-	actual, err := its.bookCase.GetByID(0)
+	actual, err := its.photoCase.GetByID(0)
 
 	its.EqualError(err, errorDomain.NotFoundMessage)
 	its.Equal(uint(0), actual.ID)
@@ -76,7 +76,7 @@ func (its *IntTestSuite) TestGetByID_Error() {
 }
 
 func (its *IntTestSuite) TestGetAll() {
-	actual, err := its.bookCase.GetAll(1, 20)
+	actual, err := its.photoCase.GetAll(1, 20)
 
 	its.Nil(err)
 	its.Greater(len(*actual.Data), 0)
@@ -84,7 +84,7 @@ func (its *IntTestSuite) TestGetAll() {
 }
 
 func (its *IntTestSuite) TestGetAll_Error() {
-	actual, err := its.bookCase.GetAll(1, 1)
+	actual, err := its.photoCase.GetAll(1, 1)
 
 	its.Nil(err)
 	its.Equal(0, len(*actual.Data))

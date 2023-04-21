@@ -1,4 +1,4 @@
-package book
+package photo
 
 import "fmt"
 
@@ -12,13 +12,13 @@ var (
 	dbTimezone = "Asia/Jakarta"
 
 	dbTestHost     = "localhost"
-	dbTestName     = "books_test"
+	dbTestName     = "photos_test"
 	dbTestUser     = "root"
 	dbTestPassword = "root"
 	dbTestPort     = "5432"
 	dbTestTimezone = "Asia/Jakarta"
 
-	dbTable = "books"
+	dbTable = "photos"
 )
 
 // connection

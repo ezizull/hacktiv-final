@@ -13,7 +13,7 @@ type SocialMedia struct {
 	DeletedAt      time.Time
 }
 
-// TableName overrides the table name used by User to `users`
+// TableName overrides the table name used by SocialMedia to `social_media`
 func (*SocialMedia) TableName() string {
 	return "social_media"
 }

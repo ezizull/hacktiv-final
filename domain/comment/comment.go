@@ -13,7 +13,7 @@ type Comment struct {
 	DeletedAt time.Time
 }
 
-// TableName overrides the table name used by User to `users`
+// TableName overrides the table name used by Comment to `comments`
 func (*Comment) TableName() string {
 	return "comments"
 }

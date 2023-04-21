@@ -14,7 +14,18 @@ type Photo struct {
 	DeletedAt time.Time
 }
 
-// TableName overrides the table name used by User to `users`
+// TableName overrides the table name used by Photo to `photos`
 func (*Photo) TableName() string {
 	return "photos"
+}
+
+// PaginationResultPhoto is a struct that contains the pagination result for photo
+type PaginationResultPhoto struct {
+	Data       *[]Photo
+	Total      int64
+	Limit      int64
+	Current    int64
+	NextCursor uint
+	PrevCursor uint
+	NumPages   int64
 }
