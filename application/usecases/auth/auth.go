@@ -62,11 +62,16 @@ func (s *Service) AccessTokenByRefreshToken(refreshToken string) (*userDomain.Se
 		return nil, err
 	}
 
-	userMap := map[string]interface{}{"id": claimsMap["id"]}
+	fmt.Println("check ", claimsMap)
+
+	userMap := map[string]interface{}{"id": claimsMap["user_id"]}
 	userRole, err := s.UserRepository.GetWithRoleByMap(userMap)
 	if err != nil {
 		return nil, err
 
+	}
+	if userRole.ID == 0 {
+		return &userDomain.SecurityAuthenticatedUser{}, errorDomain.NewAppError(errors.New(errorDomain.TokenGeneratorErrorMessage), errorDomain.NotFound)
 	}
 
 	accessTokenClaims, err := jwt.GenerateJWTToken(userRole.ID, "access", userRole.Role.Name)

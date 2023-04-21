@@ -140,6 +140,10 @@ func (r *Repository) Update(id int, updateUser *userDomain.User) (*userDomain.Us
 	}
 
 	err = r.DB.Where("id = ?", id).First(&user).Error
+	if err != nil {
+		err = errorDomain.NewAppErrorWithType(errorDomain.NotFound)
+		return &userDomain.User{}, err
+	}
 
 	return &user, err
 }
