@@ -37,14 +37,13 @@ func (c *Controller) NewPhoto(ctx *gin.Context) {
 	authData := ctx.MustGet("Auth").(security.Claims)
 
 	var request photoDomain.NewPhoto
-	request.UserID = authData.UserID
-
 	if err := controllers.BindJSON(ctx, &request); err != nil {
 		appError := errorDomain.NewAppError(err, errorDomain.ValidationError)
 		_ = ctx.Error(appError)
 		return
 	}
 
+	request.UserID = authData.UserID
 	err := createValidation(request)
 	if err != nil {
 		appError := errorDomain.NewAppError(err, errorDomain.ValidationError)
@@ -156,14 +155,15 @@ func (c *Controller) UpdatePhoto(ctx *gin.Context) {
 		_ = ctx.Error(appError)
 		return
 	}
-	var request photoDomain.UpdatePhoto
 
+	var request photoDomain.UpdatePhoto
 	err = controllers.BindJSON(ctx, &request)
 	if err != nil {
 		appError := errorDomain.NewAppError(err, errorDomain.ValidationError)
 		_ = ctx.Error(appError)
 		return
 	}
+
 	err = updateValidation(&request)
 	if err != nil {
 		_ = ctx.Error(err)
@@ -202,6 +202,7 @@ func (c *Controller) DeletePhoto(ctx *gin.Context) {
 		_ = ctx.Error(err)
 		return
 	}
+
 	ctx.JSON(http.StatusOK, gin.H{"message": "resource deleted successfully"})
 
 }
