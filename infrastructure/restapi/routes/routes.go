@@ -54,5 +54,8 @@ func ApplicationV1Router(router *gin.Engine, db *gorm.DB) {
 		// SocialMedia Routes
 		SocialMediaRoutes(routerV1, adapter.SocialMediaAdapter(db))
 
+		// Comment Routes
+		CommentRoutes(routerV1, adapter.CommentAdapter(db))
+
 	}
 }
