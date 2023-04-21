@@ -540,26 +540,28 @@
         },
         "user.ResponseUser": {
             "type": "object",
+            "required": [
+                "age"
+            ],
             "properties": {
+                "age": {
+                    "type": "integer",
+                    "example": 1
+                },
                 "createdAt": {
                     "type": "string",
                     "example": "2021-02-24 20:19:39"
+                },
+                "deletedAt": {
+                    "type": "string"
                 },
                 "email": {
                     "type": "string",
                     "example": "some@mail.com"
                 },
-                "firstName": {
-                    "type": "string",
-                    "example": "John"
-                },
                 "id": {
                     "type": "integer",
                     "example": 1099
-                },
-                "lastName": {
-                    "type": "string",
-                    "example": "Doe"
                 },
                 "updatedAt": {
                     "type": "string",

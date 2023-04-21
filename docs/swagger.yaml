@@ -136,27 +136,28 @@ definitions:
     type: object
   user.ResponseUser:
     properties:
+      age:
+        example: 1
+        type: integer
       createdAt:
         example: "2021-02-24 20:19:39"
+        type: string
+      deletedAt:
         type: string
       email:
         example: some@mail.com
         type: string
-      firstName:
-        example: John
-        type: string
       id:
         example: 1099
         type: integer
-      lastName:
-        example: Doe
-        type: string
       updatedAt:
         example: "2021-02-24 20:19:39"
         type: string
       user:
         example: BossonH
         type: string
+    required:
+    - age
     type: object
   user.Role:
     properties:

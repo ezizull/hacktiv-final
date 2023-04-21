@@ -14,6 +14,7 @@ func (user *User) DomainToResponseMapper() (createUserResponse *ResponseUser) {
 		ID:        user.ID,
 		UserName:  user.UserName,
 		Email:     user.Email,
+		Age:       user.Age,
 		CreatedAt: user.CreatedAt,
 		UpdatedAt: user.UpdatedAt,
 	}

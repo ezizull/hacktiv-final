@@ -16,6 +16,11 @@ type User struct {
 	DeletedAt    time.Time
 }
 
+// TableName overrides the table name used by User to `users`
+func (*User) TableName() string {
+	return "users"
+}
+
 // PaginationResultUser is a struct that contains the pagination result for user
 type PaginationResultUser struct {
 	Data       []User
