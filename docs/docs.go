@@ -229,11 +229,11 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Get all SocialMedias on the system",
+                "description": "Get all SocialMedia on the system",
                 "tags": [
                     "sosmed"
                 ],
-                "summary": "Get all SocialMedias",
+                "summary": "Get all SocialMedia",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -312,7 +312,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Get SocialMedias by ID on the system",
+                "description": "Get SocialMedia by ID on the system",
                 "tags": [
                     "sosmed"
                 ],

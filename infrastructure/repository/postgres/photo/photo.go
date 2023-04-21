@@ -188,6 +188,10 @@ func (r *Repository) Update(id int, updatePhoto *photoDomain.Photo) (*photoDomai
 	}
 
 	err = r.DB.Where("id = ?", id).First(&photo).Error
+	if err != nil {
+		err = errorDomain.NewAppErrorWithType(errorDomain.NotFound)
+		return &photoDomain.Photo{}, err
+	}
 
 	return &photo, err
 }
@@ -221,6 +225,10 @@ func (r *Repository) UserUpdate(id int, userId int, updatePhoto *photoDomain.Pho
 	}
 
 	err = r.DB.Where("id = ?", id).First(&photo).Error
+	if err != nil {
+		err = errorDomain.NewAppErrorWithType(errorDomain.NotFound)
+		return &photoDomain.Photo{}, err
+	}
 
 	return &photo, err
 }

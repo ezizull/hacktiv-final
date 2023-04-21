@@ -188,6 +188,10 @@ func (r *Repository) Update(id int, updateSocialMedia *sosmedDomain.SocialMedia)
 	}
 
 	err = r.DB.Where("id = ?", id).First(&sosmed).Error
+	if err != nil {
+		err = errorDomain.NewAppErrorWithType(errorDomain.NotFound)
+		return &sosmedDomain.SocialMedia{}, err
+	}
 
 	return &sosmed, err
 }
@@ -221,6 +225,10 @@ func (r *Repository) UserUpdate(id int, userId int, updateSocialMedia *sosmedDom
 	}
 
 	err = r.DB.Where("id = ?", id).First(&sosmed).Error
+	if err != nil {
+		err = errorDomain.NewAppErrorWithType(errorDomain.NotFound)
+		return &sosmedDomain.SocialMedia{}, err
+	}
 
 	return &sosmed, err
 }

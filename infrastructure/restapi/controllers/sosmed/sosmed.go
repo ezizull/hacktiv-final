@@ -60,16 +60,16 @@ func (c *Controller) NewSocialMedia(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, sosmed)
 }
 
-// GetAllSocialMedias godoc
+// GetAllSocialMedia godoc
 // @Tags sosmed
-// @Summary Get all SocialMedias
+// @Summary Get all SocialMedia
 // @Security ApiKeyAuth
-// @Description Get all SocialMedias on the system
+// @Description Get all SocialMedia on the system
 // @Success 200 {object} sosmedDomain.PaginationResultSocialMedia
 // @Failure 400 {object} controllers.MessageResponse
 // @Failure 500 {object} controllers.MessageResponse
 // @Router /sosmed [get]
-func (c *Controller) GetAllSocialMedias(ctx *gin.Context) {
+func (c *Controller) GetAllSocialMedia(ctx *gin.Context) {
 	// Get your object from the context
 	authData := ctx.MustGet("Auth").(security.Claims)
 
@@ -113,7 +113,7 @@ func (c *Controller) GetAllSocialMedias(ctx *gin.Context) {
 // GetSocialMediaByID godoc
 // @Tags sosmed
 // @Summary Get sosmeds by ID
-// @Description Get SocialMedias by ID on the system
+// @Description Get SocialMedia by ID on the system
 // @Param sosmed_id path int true "id of sosmed"
 // @Security ApiKeyAuth
 // @Success 200 {object} sosmedDomain.SocialMedia
@@ -141,7 +141,7 @@ func (c *Controller) GetSocialMediaByID(ctx *gin.Context) {
 // UpdateSocialMedia godoc
 // @Tags sosmed
 // @Summary Get sosmeds by ID
-// @Description Get SocialMedias by ID on the system
+// @Description Get SocialMedia by ID on the system
 // @Param sosmed_id path int true "id of sosmed"
 // @Security ApiKeyAuth
 // @Success 200 {object} sosmedDomain.SocialMedia
@@ -195,7 +195,7 @@ func (c *Controller) UpdateSocialMedia(ctx *gin.Context) {
 // DeleteSocialMedia godoc
 // @Tags sosmed
 // @Summary Get sosmeds by ID
-// @Description Get SocialMedias by ID on the system
+// @Description Get SocialMedia by ID on the system
 // @Param sosmed_id path int true "id of sosmed"
 // @Security ApiKeyAuth
 // @Success 200 {object} controllers.MessageResponse
