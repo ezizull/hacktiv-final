@@ -1,0 +1,3 @@
+# output
+output: application/mocks
+case: underscore
