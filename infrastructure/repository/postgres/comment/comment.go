@@ -88,7 +88,6 @@ func (r *Repository) UserGetAll(page int64, userId int, limit int64) (*commentDo
 
 // Create ... Insert New data
 func (r *Repository) Create(newComment *commentDomain.Comment) (createdComment *commentDomain.Comment, err error) {
-
 	tx := r.DB.Create(newComment)
 
 	if tx.Error != nil {

@@ -19,6 +19,58 @@ definitions:
     - email
     - password
     type: object
+  comment.Comment:
+    properties:
+      created_at:
+        example: "2021-02-24 20:19:39"
+        type: string
+      deletedAt:
+        type: string
+      id:
+        example: 1099
+        type: integer
+      message:
+        example: caption
+        type: string
+      photo_id:
+        type: integer
+      updated_at:
+        example: "2021-02-24 20:19:39"
+        type: string
+      user_id:
+        type: integer
+    type: object
+  comment.NewComment:
+    properties:
+      message:
+        example: message
+        type: string
+      photo_id:
+        type: integer
+      user_id:
+        type: integer
+    required:
+    - message
+    type: object
+  comment.PaginationResultComment:
+    properties:
+      current:
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/comment.Comment'
+        type: array
+      limit:
+        type: integer
+      nextCursor:
+        type: integer
+      numPages:
+        type: integer
+      prevCursor:
+        type: integer
+      total:
+        type: integer
+    type: object
   controllers.MessageResponse:
     properties:
       message:
@@ -293,6 +345,85 @@ paths:
       summary: Login UserName
       tags:
       - auth
+  /comment:
+    get:
+      description: Get all Comments on the system
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/comment.PaginationResultComment'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.MessageResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.MessageResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get all Comments
+      tags:
+      - comment
+    post:
+      consumes:
+      - application/json
+      description: Create new comment on the system
+      parameters:
+      - description: body data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/comment.NewComment'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/comment.Comment'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.MessageResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.MessageResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Create New CommentName
+      tags:
+      - comment
+  /comment/{comment_id}:
+    get:
+      description: Get Comments by ID on the system
+      parameters:
+      - description: id of comment
+        in: path
+        name: comment_id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.MessageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.MessageResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.MessageResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get comments by ID
+      tags:
+      - comment
   /photo:
     get:
       description: Get all Photos on the system

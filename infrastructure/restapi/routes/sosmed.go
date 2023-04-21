@@ -18,14 +18,7 @@ func SocialMediaRoutes(router *gin.RouterGroup, controller *sosmedController.Con
 		routerSocialMedia.GET("/own", controller.GetAllOwnSocialMedia)
 		routerSocialMedia.GET("/:id", controller.GetSocialMediaByID)
 		routerSocialMedia.POST("", controller.NewSocialMedia)
-
-	}
-
-	// admin role
-	routerSocialMedia.Use(middlewares.AuthRoleMiddleware([]string{"admin"}))
-	{
 		routerSocialMedia.PUT("/:id", controller.UpdateSocialMedia)
 		routerSocialMedia.DELETE("/:id", controller.DeleteSocialMedia)
 	}
-
 }

@@ -18,14 +18,7 @@ func PhotoRoutes(router *gin.RouterGroup, controller *photoController.Controller
 		routerPhoto.GET("/own", controller.GetAllOwnPhotos)
 		routerPhoto.GET("/:id", controller.GetPhotoByID)
 		routerPhoto.POST("", controller.NewPhoto)
-
-	}
-
-	// admin role
-	routerPhoto.Use(middlewares.AuthRoleMiddleware([]string{"admin"}))
-	{
 		routerPhoto.PUT("/:id", controller.UpdatePhoto)
 		routerPhoto.DELETE("/:id", controller.DeletePhoto)
 	}
-
 }
