@@ -15,6 +15,7 @@ func SocialMediaRoutes(router *gin.RouterGroup, controller *sosmedController.Con
 	routerSocialMedia.Use(middlewares.AuthJWTMiddleware())
 	{
 		routerSocialMedia.GET("", controller.GetAllSocialMedia)
+		routerSocialMedia.GET("/own", controller.GetAllOwnSocialMedia)
 		routerSocialMedia.GET("/:id", controller.GetSocialMediaByID)
 		routerSocialMedia.POST("", controller.NewSocialMedia)
 

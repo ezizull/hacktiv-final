@@ -70,6 +70,42 @@ func (c *Controller) NewPhoto(ctx *gin.Context) {
 // @Failure 500 {object} controllers.MessageResponse
 // @Router /photo [get]
 func (c *Controller) GetAllPhotos(ctx *gin.Context) {
+	pageStr := ctx.DefaultQuery("page", "1")
+	limitStr := ctx.DefaultQuery("limit", "20")
+
+	page, err := strconv.ParseInt(pageStr, 10, 64)
+	if err != nil {
+		appError := errorDomain.NewAppError(errors.New("param page is necessary to be an integer"), errorDomain.ValidationError)
+		_ = ctx.Error(appError)
+		return
+	}
+	limit, err := strconv.ParseInt(limitStr, 10, 64)
+	if err != nil {
+		appError := errorDomain.NewAppError(errors.New("param limit is necessary to be an integer"), errorDomain.ValidationError)
+		_ = ctx.Error(appError)
+		return
+	}
+
+	photos, err := c.PhotoService.GetAll(page, limit)
+	if err != nil {
+		appError := errorDomain.NewAppErrorWithType(errorDomain.UnknownError)
+		_ = ctx.Error(appError)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, photos)
+}
+
+// GetAllOwnPhotos godoc
+// @Tags photo
+// @Summary Get all Photos
+// @Security ApiKeyAuth
+// @Description Get all Photos on the system
+// @Success 200 {object} photoDomain.PaginationResultPhoto
+// @Failure 400 {object} controllers.MessageResponse
+// @Failure 500 {object} controllers.MessageResponse
+// @Router /photo [get]
+func (c *Controller) GetAllOwnPhotos(ctx *gin.Context) {
 	// Get your object from the context
 	authData := ctx.MustGet("Auth").(security.Claims)
 
@@ -89,22 +125,11 @@ func (c *Controller) GetAllPhotos(ctx *gin.Context) {
 		return
 	}
 
-	var photos *photoDomain.PaginationResultPhoto
-
-	if authData.Role == "admin" {
-		photos, err = c.PhotoService.GetAll(page, limit)
-		if err != nil {
-			appError := errorDomain.NewAppErrorWithType(errorDomain.UnknownError)
-			_ = ctx.Error(appError)
-			return
-		}
-	} else {
-		photos, err = c.PhotoService.UserGetAll(page, authData.UserID, limit)
-		if err != nil {
-			appError := errorDomain.NewAppErrorWithType(errorDomain.UnknownError)
-			_ = ctx.Error(appError)
-			return
-		}
+	photos, err := c.PhotoService.UserGetAll(page, authData.UserID, limit)
+	if err != nil {
+		appError := errorDomain.NewAppErrorWithType(errorDomain.UnknownError)
+		_ = ctx.Error(appError)
+		return
 	}
 
 	ctx.JSON(http.StatusOK, photos)

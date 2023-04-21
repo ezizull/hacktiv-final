@@ -70,6 +70,42 @@ func (c *Controller) NewSocialMedia(ctx *gin.Context) {
 // @Failure 500 {object} controllers.MessageResponse
 // @Router /sosmed [get]
 func (c *Controller) GetAllSocialMedia(ctx *gin.Context) {
+	pageStr := ctx.DefaultQuery("page", "1")
+	limitStr := ctx.DefaultQuery("limit", "20")
+
+	page, err := strconv.ParseInt(pageStr, 10, 64)
+	if err != nil {
+		appError := errorDomain.NewAppError(errors.New("param page is necessary to be an integer"), errorDomain.ValidationError)
+		_ = ctx.Error(appError)
+		return
+	}
+	limit, err := strconv.ParseInt(limitStr, 10, 64)
+	if err != nil {
+		appError := errorDomain.NewAppError(errors.New("param limit is necessary to be an integer"), errorDomain.ValidationError)
+		_ = ctx.Error(appError)
+		return
+	}
+
+	sosmeds, err := c.SocialMediaService.GetAll(page, limit)
+	if err != nil {
+		appError := errorDomain.NewAppErrorWithType(errorDomain.UnknownError)
+		_ = ctx.Error(appError)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, sosmeds)
+}
+
+// GetAllOwnSocialMedia godoc
+// @Tags sosmed
+// @Summary Get all SocialMedia
+// @Security ApiKeyAuth
+// @Description Get all SocialMedia on the system
+// @Success 200 {object} sosmedDomain.PaginationResultSocialMedia
+// @Failure 400 {object} controllers.MessageResponse
+// @Failure 500 {object} controllers.MessageResponse
+// @Router /sosmed [get]
+func (c *Controller) GetAllOwnSocialMedia(ctx *gin.Context) {
 	// Get your object from the context
 	authData := ctx.MustGet("Auth").(security.Claims)
 
@@ -89,22 +125,11 @@ func (c *Controller) GetAllSocialMedia(ctx *gin.Context) {
 		return
 	}
 
-	var sosmeds *sosmedDomain.PaginationResultSocialMedia
-
-	if authData.Role == "admin" {
-		sosmeds, err = c.SocialMediaService.GetAll(page, limit)
-		if err != nil {
-			appError := errorDomain.NewAppErrorWithType(errorDomain.UnknownError)
-			_ = ctx.Error(appError)
-			return
-		}
-	} else {
-		sosmeds, err = c.SocialMediaService.UserGetAll(page, authData.UserID, limit)
-		if err != nil {
-			appError := errorDomain.NewAppErrorWithType(errorDomain.UnknownError)
-			_ = ctx.Error(appError)
-			return
-		}
+	sosmeds, err := c.SocialMediaService.UserGetAll(page, authData.UserID, limit)
+	if err != nil {
+		appError := errorDomain.NewAppErrorWithType(errorDomain.UnknownError)
+		_ = ctx.Error(appError)
+		return
 	}
 
 	ctx.JSON(http.StatusOK, sosmeds)

@@ -15,6 +15,7 @@ func PhotoRoutes(router *gin.RouterGroup, controller *photoController.Controller
 	routerPhoto.Use(middlewares.AuthJWTMiddleware())
 	{
 		routerPhoto.GET("", controller.GetAllPhotos)
+		routerPhoto.GET("/own", controller.GetAllOwnPhotos)
 		routerPhoto.GET("/:id", controller.GetPhotoByID)
 		routerPhoto.POST("", controller.NewPhoto)
 
