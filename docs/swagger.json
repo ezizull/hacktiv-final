@@ -210,6 +210,132 @@
                 }
             }
         },
+        "/sosmed": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get all SocialMedias on the system",
+                "tags": [
+                    "sosmed"
+                ],
+                "summary": "Get all SocialMedias",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/sosmed.PaginationResultSocialMedia"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.MessageResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.MessageResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Create new sosmed on the system",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "sosmed"
+                ],
+                "summary": "Create New SocialMediaName",
+                "parameters": [
+                    {
+                        "description": "body data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/sosmed.NewSocialMedia"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/sosmed.SocialMedia"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.MessageResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.MessageResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/sosmed/{sosmed_id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get SocialMedias by ID on the system",
+                "tags": [
+                    "sosmed"
+                ],
+                "summary": "Get sosmeds by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id of sosmed",
+                        "name": "sosmed_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.MessageResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.MessageResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.MessageResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/user": {
             "get": {
                 "security": [
@@ -382,8 +508,7 @@
             "type": "object",
             "required": [
                 "photo_url",
-                "title",
-                "user_id"
+                "title"
             ],
             "properties": {
                 "caption": {
@@ -457,6 +582,86 @@
                 "title": {
                     "type": "string",
                     "example": "title"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2021-02-24 20:19:39"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "sosmed.NewSocialMedia": {
+            "type": "object",
+            "required": [
+                "name",
+                "social_media_url"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "name"
+                },
+                "social_media_url": {
+                    "type": "string",
+                    "example": "www.sosmed.com"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "sosmed.PaginationResultSocialMedia": {
+            "type": "object",
+            "properties": {
+                "current": {
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/sosmed.SocialMedia"
+                    }
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "nextCursor": {
+                    "type": "integer"
+                },
+                "numPages": {
+                    "type": "integer"
+                },
+                "prevCursor": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "sosmed.SocialMedia": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string",
+                    "example": "2021-02-24 20:19:39"
+                },
+                "deletedAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1099
+                },
+                "name": {
+                    "type": "string",
+                    "example": "caption"
+                },
+                "social_media_url": {
+                    "type": "string",
+                    "example": "www.sosmed.com"
                 },
                 "updated_at": {
                     "type": "string",

@@ -17,3 +17,14 @@ type SocialMedia struct {
 func (*SocialMedia) TableName() string {
 	return "social_media"
 }
+
+// PaginationResultSocialMedia is a struct that contains the pagination result for social media
+type PaginationResultSocialMedia struct {
+	Data       *[]SocialMedia
+	Total      int64
+	Limit      int64
+	Current    int64
+	NextCursor uint
+	PrevCursor uint
+	NumPages   int64
+}

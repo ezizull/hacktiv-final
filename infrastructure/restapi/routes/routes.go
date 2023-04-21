@@ -45,10 +45,14 @@ func ApplicationV1Router(router *gin.Engine, db *gorm.DB) {
 		// Auth Routes
 		AuthRoutes(routerV1, adapter.AuthAdapter(db))
 
+		// User Routes
+		UserRoutes(routerV1, adapter.UserAdapter(db))
+
 		// Photo Routes
 		PhotoRoutes(routerV1, adapter.PhotoAdapter(db))
 
-		// User Routes
-		UserRoutes(routerV1, adapter.UserAdapter(db))
+		// SocialMedia Routes
+		SocialMediaRoutes(routerV1, adapter.SocialMediaAdapter(db))
+
 	}
 }

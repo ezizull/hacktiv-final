@@ -108,7 +108,7 @@ func (r *Repository) Create(newPhoto *photoDomain.Photo) (createdPhoto *photoDom
 		return
 	}
 
-	createdPhoto = photo.ToDomainMapper()
+	createdPhoto = photo
 	return
 }
 
@@ -127,7 +127,7 @@ func (r *Repository) GetByID(id int) (*photoDomain.Photo, error) {
 		return &photoDomain.Photo{}, err
 	}
 
-	return photo.ToDomainMapper(), nil
+	return &photo, nil
 }
 
 // UserGetByID ... Fetch only one photo by Id
@@ -145,7 +145,7 @@ func (r *Repository) UserGetByID(id int, userId int) (*photoDomain.Photo, error)
 		return &photoDomain.Photo{}, err
 	}
 
-	return photo.ToDomainMapper(), nil
+	return &photo, nil
 }
 
 // GetOneByMap ... Fetch only one photo by Map
@@ -157,7 +157,7 @@ func (r *Repository) GetOneByMap(photoMap map[string]interface{}) (*photoDomain.
 		err = errorDomain.NewAppErrorWithType(errorDomain.UnknownError)
 		return nil, err
 	}
-	return photo.ToDomainMapper(), err
+	return &photo, err
 }
 
 // Update ... Update photo
@@ -189,7 +189,7 @@ func (r *Repository) Update(id int, updatePhoto *photoDomain.Photo) (*photoDomai
 
 	err = r.DB.Where("id = ?", id).First(&photo).Error
 
-	return photo.ToDomainMapper(), err
+	return &photo, err
 }
 
 // UserUpdate ... UserUpdate photo
@@ -222,7 +222,7 @@ func (r *Repository) UserUpdate(id int, userId int, updatePhoto *photoDomain.Pho
 
 	err = r.DB.Where("id = ?", id).First(&photo).Error
 
-	return photo.ToDomainMapper(), err
+	return &photo, err
 }
 
 // Delete ... Delete photo

@@ -17,3 +17,14 @@ type Comment struct {
 func (*Comment) TableName() string {
 	return "comments"
 }
+
+// PaginationResultComment is a struct that contains the pagination result for comment
+type PaginationResultComment struct {
+	Data       *[]Comment
+	Total      int64
+	Limit      int64
+	Current    int64
+	NextCursor uint
+	PrevCursor uint
+	NumPages   int64
+}

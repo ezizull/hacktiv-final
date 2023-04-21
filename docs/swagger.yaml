@@ -40,7 +40,6 @@ definitions:
     required:
     - photo_url
     - title
-    - user_id
     type: object
   photo.PaginationResultPhoto:
     properties:
@@ -79,6 +78,61 @@ definitions:
         type: string
       title:
         example: title
+        type: string
+      updated_at:
+        example: "2021-02-24 20:19:39"
+        type: string
+      user_id:
+        type: integer
+    type: object
+  sosmed.NewSocialMedia:
+    properties:
+      name:
+        example: name
+        type: string
+      social_media_url:
+        example: www.sosmed.com
+        type: string
+      user_id:
+        type: integer
+    required:
+    - name
+    - social_media_url
+    type: object
+  sosmed.PaginationResultSocialMedia:
+    properties:
+      current:
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/sosmed.SocialMedia'
+        type: array
+      limit:
+        type: integer
+      nextCursor:
+        type: integer
+      numPages:
+        type: integer
+      prevCursor:
+        type: integer
+      total:
+        type: integer
+    type: object
+  sosmed.SocialMedia:
+    properties:
+      created_at:
+        example: "2021-02-24 20:19:39"
+        type: string
+      deletedAt:
+        type: string
+      id:
+        example: 1099
+        type: integer
+      name:
+        example: caption
+        type: string
+      social_media_url:
+        example: www.sosmed.com
         type: string
       updated_at:
         example: "2021-02-24 20:19:39"
@@ -318,6 +372,85 @@ paths:
       summary: Get photos by ID
       tags:
       - photo
+  /sosmed:
+    get:
+      description: Get all SocialMedias on the system
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/sosmed.PaginationResultSocialMedia'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.MessageResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.MessageResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get all SocialMedias
+      tags:
+      - sosmed
+    post:
+      consumes:
+      - application/json
+      description: Create new sosmed on the system
+      parameters:
+      - description: body data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/sosmed.NewSocialMedia'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/sosmed.SocialMedia'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.MessageResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.MessageResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Create New SocialMediaName
+      tags:
+      - sosmed
+  /sosmed/{sosmed_id}:
+    get:
+      description: Get SocialMedias by ID on the system
+      parameters:
+      - description: id of sosmed
+        in: path
+        name: sosmed_id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.MessageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.MessageResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.MessageResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get sosmeds by ID
+      tags:
+      - sosmed
   /user:
     get:
       description: Get all Users on the system
