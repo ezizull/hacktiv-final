@@ -24,7 +24,8 @@ definitions:
       created_at:
         example: "2021-02-24 20:19:39"
         type: string
-      deletedAt:
+      deleted_at:
+        example: "2021-02-24 20:19:39"
         type: string
       id:
         example: 1099
@@ -120,7 +121,8 @@ definitions:
       created_at:
         example: "2021-02-24 20:19:39"
         type: string
-      deletedAt:
+      deleted_at:
+        example: "2021-02-24 20:19:39"
         type: string
       id:
         example: 1099
@@ -175,7 +177,8 @@ definitions:
       created_at:
         example: "2021-02-24 20:19:39"
         type: string
-      deletedAt:
+      deleted_at:
+        example: "2021-02-24 20:19:39"
         type: string
       id:
         example: 1099
@@ -255,7 +258,8 @@ definitions:
       createdAt:
         example: "2021-02-24 20:19:39"
         type: string
-      deletedAt:
+      deleted_at:
+        example: "2021-02-24 20:19:39"
         type: string
       email:
         example: some@mail.com
@@ -274,13 +278,18 @@ definitions:
     type: object
   user.Role:
     properties:
-      createdAt:
+      created_at:
+        example: "2021-02-24 20:19:39"
+        type: string
+      deleted_at:
+        example: "2021-02-24 20:19:39"
         type: string
       id:
         type: integer
       name:
         type: string
-      updatedAt:
+      updated_at:
+        example: "2021-02-24 20:19:39"
         type: string
     type: object
   user.SecurityAuthenticatedUser:

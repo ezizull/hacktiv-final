@@ -2,17 +2,15 @@ package user
 
 import (
 	"time"
-
-	"gorm.io/gorm"
 )
 
 // Role is a struct that contains the role information
 type Role struct {
-	ID        int             `json:"id" gorm:"primaryKey"`
-	Name      string          `json:"name" gorm:"unique"`
-	CreatedAt time.Time       `json:"created_at,omitempty" example:"2021-02-24 20:19:39" gorm:"autoCreateTime:mili"`
-	UpdatedAt time.Time       `json:"updated_at,omitempty" example:"2021-02-24 20:19:39" gorm:"autoUpdateTime:mili"`
-	DeletedAt *gorm.DeletedAt `json:"deleted_at,omitempty" example:"2021-02-24 20:19:39"`
+	ID        int       `json:"id" gorm:"primaryKey"`
+	Name      string    `json:"name" gorm:"unique"`
+	CreatedAt time.Time `json:"created_at,omitempty" example:"2021-02-24 20:19:39" gorm:"autoCreateTime:mili"`
+	UpdatedAt time.Time `json:"updated_at,omitempty" example:"2021-02-24 20:19:39" gorm:"autoUpdateTime:mili"`
+	DeletedAt time.Time `json:"deleted_at,omitempty" example:"2021-02-24 20:19:39"`
 }
 
 // UserRole is a struct that contains role of user

@@ -2,9 +2,7 @@
 
 package docs
 
-import (
-    "github.com/swaggo/swag"
-)
+import "github.com/swaggo/swag"
 
 const docTemplate = `{
     "schemes": {{ marshal .Schemes }},
@@ -643,8 +641,9 @@ const docTemplate = `{
                     "type": "string",
                     "example": "2021-02-24 20:19:39"
                 },
-                "deletedAt": {
-                    "type": "string"
+                "deleted_at": {
+                    "type": "string",
+                    "example": "2021-02-24 20:19:39"
                 },
                 "id": {
                     "type": "integer",
@@ -785,8 +784,9 @@ const docTemplate = `{
                     "type": "string",
                     "example": "2021-02-24 20:19:39"
                 },
-                "deletedAt": {
-                    "type": "string"
+                "deleted_at": {
+                    "type": "string",
+                    "example": "2021-02-24 20:19:39"
                 },
                 "id": {
                     "type": "integer",
@@ -865,8 +865,9 @@ const docTemplate = `{
                     "type": "string",
                     "example": "2021-02-24 20:19:39"
                 },
-                "deletedAt": {
-                    "type": "string"
+                "deleted_at": {
+                    "type": "string",
+                    "example": "2021-02-24 20:19:39"
                 },
                 "id": {
                     "type": "integer",
@@ -979,8 +980,9 @@ const docTemplate = `{
                     "type": "string",
                     "example": "2021-02-24 20:19:39"
                 },
-                "deletedAt": {
-                    "type": "string"
+                "deleted_at": {
+                    "type": "string",
+                    "example": "2021-02-24 20:19:39"
                 },
                 "email": {
                     "type": "string",
@@ -1003,8 +1005,13 @@ const docTemplate = `{
         "user.Role": {
             "type": "object",
             "properties": {
-                "createdAt": {
-                    "type": "string"
+                "created_at": {
+                    "type": "string",
+                    "example": "2021-02-24 20:19:39"
+                },
+                "deleted_at": {
+                    "type": "string",
+                    "example": "2021-02-24 20:19:39"
                 },
                 "id": {
                     "type": "integer"
@@ -1012,8 +1019,9 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
-                "updatedAt": {
-                    "type": "string"
+                "updated_at": {
+                    "type": "string",
+                    "example": "2021-02-24 20:19:39"
                 }
             }
         },
