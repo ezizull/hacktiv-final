@@ -12,7 +12,7 @@
       "Localhost": {
         "Read": {
           "Hostname": "localhost",
-          "Name": "hacktiv",
+          "Name": "hacktiv_final",
           "Username": "root",
           "Password": "root",
           "Port": "5432",
@@ -21,7 +21,7 @@
         },
         "Write": {
           "Hostname": "localhost",
-          "Name": "hacktiv",
+          "Name": "hacktiv_final",
           "Username": "root",
           "Password": "root",
           "Port": "5432",
@@ -34,7 +34,7 @@
       "Localhost": {
         "Read": {
           "Hostname": "localhost",
-          "Name": "hacktiv",
+          "Name": "hacktiv_final",
           "Username": "root",
           "Password": "root",
           "Port": "3306",
@@ -43,7 +43,7 @@
         },
         "Write": {
           "Hostname": "localhost",
-          "Name": "hacktiv",
+          "Name": "hacktiv_final",
           "Username": "root",
           "Password": "root",
           "Port": "3306",

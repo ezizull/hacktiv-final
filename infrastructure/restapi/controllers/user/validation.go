@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	errorDomain "hacktiv/final-project/domain/errors"
+	userDomain "hacktiv/final-project/domain/user"
 	"regexp"
 	"strings"
 
@@ -84,7 +85,7 @@ func updateValidation(request map[string]interface{}) (err error) {
 	return
 }
 
-func createValidation(request NewUserRequest) error {
+func createValidation(request userDomain.NewUser) error {
 	// Username must have minimum length of 4
 	if len(request.UserName) < 4 {
 		return errors.New("Username must be at least 4 characters long")
@@ -110,21 +111,6 @@ func createValidation(request NewUserRequest) error {
 	}
 	if !regexp.MustCompile(`\d`).MatchString(request.Password) {
 		return errors.New("Password should contain at least one number")
-	}
-
-	// First name must have minimum length of 2
-	if len(request.FirstName) < 2 {
-		return errors.New("First name must be at least 2 characters long")
-	}
-
-	// Last name must have minimum length of 2
-	if len(request.LastName) < 2 {
-		return errors.New("Last name must be at least 2 characters long")
-	}
-
-	// Role ID must not be empty
-	if len(request.RoleID) < 1 {
-		return errors.New("Role ID must not be empty")
 	}
 
 	return nil

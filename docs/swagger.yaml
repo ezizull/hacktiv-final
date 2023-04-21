@@ -7,29 +7,6 @@ definitions:
     required:
     - refreshToken
     type: object
-  auth.DataUserAuthenticated:
-    properties:
-      email:
-        example: some@mail.com
-        type: string
-      firstName:
-        example: John
-        type: string
-      id:
-        example: 123
-        type: integer
-      lastName:
-        example: Doe
-        type: string
-      role:
-        $ref: '#/definitions/secure_challenge-3_domain_role.Role'
-      role_id:
-        example: admin
-        type: string
-      userName:
-        example: UserName
-        type: string
-    type: object
   auth.LoginRequest:
     properties:
       email:
@@ -65,7 +42,7 @@ definitions:
         type: integer
       data:
         items:
-          $ref: '#/definitions/secure_challenge-3_domain_book.Book'
+          $ref: '#/definitions/hacktiv_final-project_domain_book.Book'
         type: array
       limit:
         type: integer
@@ -83,7 +60,7 @@ definitions:
       message:
         type: string
     type: object
-  secure_challenge-3_domain_book.Book:
+  hacktiv_final-project_domain_book.Book:
     properties:
       createdAt:
         type: string
@@ -102,48 +79,58 @@ definitions:
       user_id:
         type: integer
     type: object
-  secure_challenge-3_domain_role.Role:
+  user.DataSecurityAuthenticated:
     properties:
-      createdAt:
+      expirationAccessDateTime:
+        example: "2023-02-02T21:03:53.196419-06:00"
         type: string
-      id:
-        type: integer
-      name:
+      expirationRefreshDateTime:
+        example: "2023-02-03T06:53:53.196419-06:00"
         type: string
-      updatedAt:
+      jwtAccessToken:
+        example: SomeAccessToken
+        type: string
+      jwtRefreshToken:
+        example: SomeRefreshToken
         type: string
     type: object
-  user.MessageResponse:
-    properties:
-      message:
-        type: string
-    type: object
-  user.NewUserRequest:
+  user.DataUserAuthenticated:
     properties:
       email:
+        example: some@mail.com
+        type: string
+      id:
+        example: 123
+        type: integer
+      role:
+        $ref: '#/definitions/user.Role'
+      role_id:
+        example: admin
+        type: string
+      userName:
+        example: UserName
+        type: string
+    type: object
+  user.NewUser:
+    properties:
+      age:
+        example: 1
+        type: integer
+      email:
         example: mail@mail.com
-        type: string
-      firstName:
-        example: John
-        type: string
-      lastName:
-        example: Doe
         type: string
       password:
         example: Password123
         type: string
       role_id:
-        example: admin
         type: string
       username:
         example: someUser
         type: string
     required:
+    - age
     - email
-    - firstName
-    - lastName
     - password
-    - role_id
     - username
     type: object
   user.ResponseUser:
@@ -170,6 +157,24 @@ definitions:
         example: BossonH
         type: string
     type: object
+  user.Role:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  user.SecurityAuthenticatedUser:
+    properties:
+      data:
+        $ref: '#/definitions/user.DataUserAuthenticated'
+      security:
+        $ref: '#/definitions/user.DataSecurityAuthenticated'
+    type: object
 info:
   contact: {}
 paths:
@@ -187,7 +192,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/auth.DataUserAuthenticated'
+            $ref: '#/definitions/user.SecurityAuthenticatedUser'
         "400":
           description: Bad Request
           schema:
@@ -213,7 +218,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/auth.DataUserAuthenticated'
+            $ref: '#/definitions/user.SecurityAuthenticatedUser'
         "400":
           description: Bad Request
           schema:
@@ -273,7 +278,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/secure_challenge-3_domain_book.Book'
+            $ref: '#/definitions/hacktiv_final-project_domain_book.Book'
         "400":
           description: Bad Request
           schema:
@@ -297,7 +302,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/secure_challenge-3_domain_book.Book'
+            $ref: '#/definitions/hacktiv_final-project_domain_book.Book'
         "400":
           description: Bad Request
           schema:
@@ -322,11 +327,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/user.MessageResponse'
+            $ref: '#/definitions/controllers.MessageResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/user.MessageResponse'
+            $ref: '#/definitions/controllers.MessageResponse'
       security:
       - ApiKeyAuth: []
       summary: Get all Users
@@ -342,7 +347,7 @@ paths:
         name: data
         required: true
         schema:
-          $ref: '#/definitions/user.NewUserRequest'
+          $ref: '#/definitions/user.NewUser'
       produces:
       - application/json
       responses:
@@ -353,11 +358,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/user.MessageResponse'
+            $ref: '#/definitions/controllers.MessageResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/user.MessageResponse'
+            $ref: '#/definitions/controllers.MessageResponse'
       security:
       - ApiKeyAuth: []
       summary: Create New UserName
@@ -376,15 +381,15 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/user.MessageResponse'
+            $ref: '#/definitions/controllers.MessageResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/user.MessageResponse'
+            $ref: '#/definitions/controllers.MessageResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/user.MessageResponse'
+            $ref: '#/definitions/controllers.MessageResponse'
       security:
       - ApiKeyAuth: []
       summary: Get users by ID

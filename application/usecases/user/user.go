@@ -2,7 +2,6 @@
 package user
 
 import (
-	roleDomain "hacktiv/final-project/domain/role"
 	userDomain "hacktiv/final-project/domain/user"
 	roleRepository "hacktiv/final-project/infrastructure/repository/postgres/role"
 	userRepository "hacktiv/final-project/infrastructure/repository/postgres/user"
@@ -22,7 +21,7 @@ func (s *Service) GetAll() (*[]userDomain.User, error) {
 }
 
 // GetWithRole is a function that returns a user with role by id
-func (s *Service) GetWithRole(id int) (*roleDomain.User, error) {
+func (s *Service) GetWithRole(id int) (*userDomain.UserRole, error) {
 	return s.UserRepository.GetWithRole(id)
 }
 
@@ -32,22 +31,22 @@ func (s *Service) GetByID(id int) (*userDomain.User, error) {
 }
 
 // Create is a function that creates a new user
-func (s *Service) Create(newUser NewUser) (*userDomain.User, error) {
+func (s *Service) Create(newUser userDomain.NewUser) (*userDomain.User, error) {
 
 	_, err := s.RoleRepository.GetByID(newUser.RoleID)
 	if err != nil {
 		return &userDomain.User{}, err
 	}
 
-	domain := newUser.toDomainMapper()
+	user := newUser.ToDomainMapper()
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(newUser.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return &userDomain.User{}, err
 	}
-	domain.HashPassword = string(hash)
+	user.HashPassword = string(hash)
 
-	return s.UserRepository.Create(domain)
+	return s.UserRepository.Create(user)
 }
 
 // GetOneByMap is a function that returns a user by map

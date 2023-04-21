@@ -1,26 +1,22 @@
-// Package auth provides the use case for authentication
-package auth
+package user
 
-import (
-	domainRole "hacktiv/final-project/domain/role"
-	"time"
-)
+import "time"
 
-// LoginUser is a struct that contains the request body for the login user
-type LoginUser struct {
-	Email    string
-	Password string
+// Auth contains the data of the authentication
+type Auth struct {
+	AccessToken               string
+	RefreshToken              string
+	ExpirationAccessDateTime  time.Time
+	ExpirationRefreshDateTime time.Time
 }
 
 // DataUserAuthenticated is a struct that contains the data for the authenticated user
 type DataUserAuthenticated struct {
-	ID        int    `json:"id" example:"123"`
-	UserName  string `json:"userName" example:"UserName" gorm:"unique"`
-	Email     string `json:"email" example:"some@mail.com" gorm:"unique"`
-	FirstName string `json:"firstName" example:"John"`
-	LastName  string `json:"lastName" example:"Doe"`
-	RoleID    string `json:"role_id" example:"admin"`
-	Role      domainRole.Role
+	ID       int    `json:"id" example:"123"`
+	UserName string `json:"userName" example:"UserName" gorm:"unique"`
+	Email    string `json:"email" example:"some@mail.com" gorm:"unique"`
+	RoleID   string `json:"role_id" example:"admin"`
+	Role     Role
 }
 
 // DataSecurityAuthenticated is a struct that contains the security data for the authenticated user

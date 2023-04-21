@@ -1,4 +1,4 @@
-package role
+package user
 
 import "time"
 
@@ -10,7 +10,13 @@ type Role struct {
 	UpdatedAt time.Time
 }
 
+// UserRole is a struct that contains role of user
+type UserRole struct {
+	User
+	Role Role `gorm:"foreignKey:ID;references:RoleID"`
+}
+
 // TableName overrides the table name used by User to `users`
-func (*Role) TableName() string {
-	return "roles"
+func (*UserRole) TableName() string {
+	return "users"
 }

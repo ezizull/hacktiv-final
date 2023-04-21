@@ -5,7 +5,7 @@ import (
 	security "hacktiv/final-project/application/security/jwt"
 	useCaseBook "hacktiv/final-project/application/usecases/book"
 	bookDomain "hacktiv/final-project/domain/book"
-	domainError "hacktiv/final-project/domain/errors"
+	errorDomain "hacktiv/final-project/domain/errors"
 	"hacktiv/final-project/infrastructure/restapi/controllers"
 	"net/http"
 	"strconv"
@@ -35,7 +35,7 @@ func (c *Controller) NewBook(ctx *gin.Context) {
 	var request NewBookRequest
 
 	if err := controllers.BindJSON(ctx, &request); err != nil {
-		appError := domainError.NewAppError(err, domainError.ValidationError)
+		appError := errorDomain.NewAppError(err, errorDomain.ValidationError)
 		_ = ctx.Error(appError)
 		return
 	}
@@ -74,13 +74,13 @@ func (c *Controller) GetAllBooks(ctx *gin.Context) {
 
 	page, err := strconv.ParseInt(pageStr, 10, 64)
 	if err != nil {
-		appError := domainError.NewAppError(errors.New("param page is necessary to be an integer"), domainError.ValidationError)
+		appError := errorDomain.NewAppError(errors.New("param page is necessary to be an integer"), errorDomain.ValidationError)
 		_ = ctx.Error(appError)
 		return
 	}
 	limit, err := strconv.ParseInt(limitStr, 10, 64)
 	if err != nil {
-		appError := domainError.NewAppError(errors.New("param limit is necessary to be an integer"), domainError.ValidationError)
+		appError := errorDomain.NewAppError(errors.New("param limit is necessary to be an integer"), errorDomain.ValidationError)
 		_ = ctx.Error(appError)
 		return
 	}
@@ -90,14 +90,14 @@ func (c *Controller) GetAllBooks(ctx *gin.Context) {
 	if authData.Role == "admin" {
 		books, err = c.BookService.GetAll(page, limit)
 		if err != nil {
-			appError := domainError.NewAppErrorWithType(domainError.UnknownError)
+			appError := errorDomain.NewAppErrorWithType(errorDomain.UnknownError)
 			_ = ctx.Error(appError)
 			return
 		}
 	} else {
 		books, err = c.BookService.UserGetAll(page, authData.UserID, limit)
 		if err != nil {
-			appError := domainError.NewAppErrorWithType(domainError.UnknownError)
+			appError := errorDomain.NewAppErrorWithType(errorDomain.UnknownError)
 			_ = ctx.Error(appError)
 			return
 		}
@@ -121,7 +121,7 @@ func (c *Controller) GetBookByID(ctx *gin.Context) {
 
 	bookID, err := strconv.Atoi(ctx.Param("id"))
 	if err != nil {
-		appError := domainError.NewAppError(errors.New("book id is invalid"), domainError.ValidationError)
+		appError := errorDomain.NewAppError(errors.New("book id is invalid"), errorDomain.ValidationError)
 		_ = ctx.Error(appError)
 		return
 	}
@@ -131,7 +131,7 @@ func (c *Controller) GetBookByID(ctx *gin.Context) {
 	if authData.Role == "admin" {
 		bookDomain, err = c.BookService.GetByID(bookID)
 		if err != nil {
-			appError := domainError.NewAppError(err, domainError.ValidationError)
+			appError := errorDomain.NewAppError(err, errorDomain.ValidationError)
 			_ = ctx.Error(appError)
 			return
 		}
@@ -139,7 +139,7 @@ func (c *Controller) GetBookByID(ctx *gin.Context) {
 
 		bookDomain, err = c.BookService.UserGetByID(bookID, authData.UserID)
 		if err != nil {
-			appError := domainError.NewAppError(err, domainError.ValidationError)
+			appError := errorDomain.NewAppError(err, errorDomain.ValidationError)
 			_ = ctx.Error(appError)
 			return
 		}
@@ -152,7 +152,7 @@ func (c *Controller) GetBookByID(ctx *gin.Context) {
 func (c *Controller) UpdateBook(ctx *gin.Context) {
 	bookID, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
 	if err != nil {
-		appError := domainError.NewAppError(errors.New("param id is necessary in the url"), domainError.ValidationError)
+		appError := errorDomain.NewAppError(errors.New("param id is necessary in the url"), errorDomain.ValidationError)
 		_ = ctx.Error(appError)
 		return
 	}
@@ -160,7 +160,7 @@ func (c *Controller) UpdateBook(ctx *gin.Context) {
 
 	err = controllers.BindJSONMap(ctx, &requestMap)
 	if err != nil {
-		appError := domainError.NewAppError(err, domainError.ValidationError)
+		appError := errorDomain.NewAppError(err, errorDomain.ValidationError)
 		_ = ctx.Error(appError)
 		return
 	}
@@ -186,7 +186,7 @@ func (c *Controller) UpdateBook(ctx *gin.Context) {
 func (c *Controller) DeleteBook(ctx *gin.Context) {
 	bookID, err := strconv.Atoi(ctx.Param("id"))
 	if err != nil {
-		appError := domainError.NewAppError(errors.New("param id is necessary in the url"), domainError.ValidationError)
+		appError := errorDomain.NewAppError(errors.New("param id is necessary in the url"), errorDomain.ValidationError)
 		_ = ctx.Error(appError)
 		return
 	}

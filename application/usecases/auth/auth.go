@@ -6,20 +6,13 @@ import (
 	"time"
 
 	"hacktiv/final-project/application/security/jwt"
-	errorsDomain "hacktiv/final-project/domain/errors"
+	errorDomain "hacktiv/final-project/domain/errors"
+	userDomain "hacktiv/final-project/domain/user"
 
 	userRepository "hacktiv/final-project/infrastructure/repository/postgres/user"
 
 	"golang.org/x/crypto/bcrypt"
 )
-
-// Auth contains the data of the authentication
-type Auth struct {
-	AccessToken               string
-	RefreshToken              string
-	ExpirationAccessDateTime  time.Time
-	ExpirationRefreshDateTime time.Time
-}
 
 // Service is a struct that contains the repository implementation for auth use case
 type Service struct {
@@ -27,32 +20,32 @@ type Service struct {
 }
 
 // Login implements the login use case
-func (s *Service) Login(user LoginUser) (*SecurityAuthenticatedUser, error) {
+func (s *Service) Login(user userDomain.LoginUser) (*userDomain.SecurityAuthenticatedUser, error) {
 	userMap := map[string]interface{}{"email": user.Email}
-	domainUserRole, err := s.UserRepository.GetWithRoleByMap(userMap)
+	userRole, err := s.UserRepository.GetWithRoleByMap(userMap)
 	if err != nil {
-		return &SecurityAuthenticatedUser{}, err
+		return &userDomain.SecurityAuthenticatedUser{}, err
 	}
-	if domainUserRole.ID == 0 {
-		return &SecurityAuthenticatedUser{}, errorsDomain.NewAppError(errors.New("email or password does not match"), errorsDomain.NotAuthorized)
+	if userRole.ID == 0 {
+		return &userDomain.SecurityAuthenticatedUser{}, errorDomain.NewAppError(errors.New("email or password does not match"), errorDomain.NotAuthorized)
 	}
 
-	isAuthenticated := CheckPasswordHash(user.Password, domainUserRole.HashPassword)
+	isAuthenticated := CheckPasswordHash(user.Password, userRole.HashPassword)
 	if !isAuthenticated {
-		err = errorsDomain.NewAppError(err, errorsDomain.NotAuthorized)
-		return &SecurityAuthenticatedUser{}, errorsDomain.NewAppError(errors.New("email or password does not match"), errorsDomain.NotAuthorized)
+		err = errorDomain.NewAppError(err, errorDomain.NotAuthorized)
+		return &userDomain.SecurityAuthenticatedUser{}, errorDomain.NewAppError(errors.New("email or password does not match"), errorDomain.NotAuthorized)
 	}
 
-	accessTokenClaims, err := jwt.GenerateJWTToken(domainUserRole.ID, "access", domainUserRole.Role.Name)
+	accessTokenClaims, err := jwt.GenerateJWTToken(userRole.ID, "access", userRole.Role.Name)
 	if err != nil {
-		return &SecurityAuthenticatedUser{}, err
+		return &userDomain.SecurityAuthenticatedUser{}, err
 	}
-	refreshTokenClaims, err := jwt.GenerateJWTToken(domainUserRole.ID, "refresh", domainUserRole.Role.Name)
+	refreshTokenClaims, err := jwt.GenerateJWTToken(userRole.ID, "refresh", userRole.Role.Name)
 	if err != nil {
-		return &SecurityAuthenticatedUser{}, err
+		return &userDomain.SecurityAuthenticatedUser{}, err
 	}
 
-	return secAuthUserRoleMapper(domainUserRole, &Auth{
+	return userDomain.SecAuthUserRoleMapper(userRole, &userDomain.Auth{
 		AccessToken:               accessTokenClaims.Token,
 		RefreshToken:              refreshTokenClaims.Token,
 		ExpirationAccessDateTime:  accessTokenClaims.ExpirationTime,
@@ -61,27 +54,27 @@ func (s *Service) Login(user LoginUser) (*SecurityAuthenticatedUser, error) {
 }
 
 // AccessTokenByRefreshToken implements the Access Token By Refresh Token use case
-func (s *Service) AccessTokenByRefreshToken(refreshToken string) (*SecurityAuthenticatedUser, error) {
+func (s *Service) AccessTokenByRefreshToken(refreshToken string) (*userDomain.SecurityAuthenticatedUser, error) {
 	claimsMap, err := jwt.GetClaimsAndVerifyToken(refreshToken, "refresh")
 	if err != nil {
 		return nil, err
 	}
 
 	userMap := map[string]interface{}{"id": claimsMap["id"]}
-	domainUserRole, err := s.UserRepository.GetWithRoleByMap(userMap)
+	userRole, err := s.UserRepository.GetWithRoleByMap(userMap)
 	if err != nil {
 		return nil, err
 
 	}
 
-	accessTokenClaims, err := jwt.GenerateJWTToken(domainUserRole.ID, "access", domainUserRole.Role.Name)
+	accessTokenClaims, err := jwt.GenerateJWTToken(userRole.ID, "access", userRole.Role.Name)
 	if err != nil {
-		return &SecurityAuthenticatedUser{}, err
+		return &userDomain.SecurityAuthenticatedUser{}, err
 	}
 
 	var expTime = int64(claimsMap["exp"].(float64))
 
-	return secAuthUserRoleMapper(domainUserRole, &Auth{
+	return userDomain.SecAuthUserRoleMapper(userRole, &userDomain.Auth{
 		AccessToken:               accessTokenClaims.Token,
 		ExpirationAccessDateTime:  accessTokenClaims.ExpirationTime,
 		RefreshToken:              refreshToken,

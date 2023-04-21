@@ -1,9 +1,6 @@
 migrate:
 	go run main.go postgres -m
 
-migrate-test:
-	go run main.go postgres -tm
-
 testing:
 	go test ./...
 

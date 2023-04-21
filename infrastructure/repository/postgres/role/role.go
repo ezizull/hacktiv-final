@@ -1,8 +1,8 @@
 package role
 
 import (
-	domainError "hacktiv/final-project/domain/errors"
-	domainRole "hacktiv/final-project/domain/role"
+	errorDomain "hacktiv/final-project/domain/errors"
+	domainRole "hacktiv/final-project/domain/user"
 
 	"gorm.io/gorm"
 )
@@ -14,17 +14,17 @@ type Repository struct {
 
 // GetByID ... Fetch only one role by ID
 func (r *Repository) GetByID(id string) (*domainRole.Role, error) {
-	var role Role
+	var role domainRole.Role
 	err := r.DB.Where("id = ?", id).First(&role).Error
 
 	if err != nil {
 		switch err.Error() {
 		case gorm.ErrRecordNotFound.Error():
-			err = domainError.NewAppErrorWithType(domainError.NotFound)
+			err = errorDomain.NewAppErrorWithType(errorDomain.NotFound)
 		default:
-			err = domainError.NewAppErrorWithType(domainError.UnknownError)
+			err = errorDomain.NewAppErrorWithType(errorDomain.UnknownError)
 		}
 	}
 
-	return role.toDomainMapper(), err
+	return &role, err
 }

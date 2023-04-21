@@ -3,9 +3,8 @@ package postgres
 
 import (
 	"fmt"
-	bookStruct "hacktiv/final-project/infrastructure/repository/postgres/book"
-	roleStruct "hacktiv/final-project/infrastructure/repository/postgres/role"
-	userStruct "hacktiv/final-project/infrastructure/repository/postgres/user"
+	bookStruct "hacktiv/final-project/domain/book"
+	userStruct "hacktiv/final-project/domain/user"
 	"log"
 	"os"
 	"time"
@@ -102,7 +101,7 @@ func MigratePostgre(inGormDB *gorm.DB) error {
 	tablesMigrate := []interface{}{
 		&bookStruct.Book{},
 		&userStruct.User{},
-		&roleStruct.Role{},
+		&userStruct.Role{},
 	}
 
 	err := inGormDB.AutoMigrate(tablesMigrate...)

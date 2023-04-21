@@ -4,6 +4,7 @@ package auth
 import (
 	useCaseAuth "hacktiv/final-project/application/usecases/auth"
 	errorDomain "hacktiv/final-project/domain/errors"
+	userDomain "hacktiv/final-project/domain/user"
 	"hacktiv/final-project/infrastructure/restapi/controllers"
 	"net/http"
 
@@ -20,7 +21,7 @@ type Controller struct {
 // @Summary Login UserName
 // @Description Auth user by email and password
 // @Param data body LoginRequest true "body data"
-// @Success 200 {object} useCaseAuth.DataUserAuthenticated
+// @Success 200 {object} userDomain.SecurityAuthenticatedUser
 // @Failure 400 {object} controllers.MessageResponse
 // @Failure 500 {object} controllers.MessageResponse
 // @Router /auth/login [post]
@@ -32,7 +33,7 @@ func (c *Controller) Login(ctx *gin.Context) {
 		_ = ctx.Error(appError)
 		return
 	}
-	user := useCaseAuth.LoginUser{
+	user := userDomain.LoginUser{
 		Email:    request.Email,
 		Password: request.Password,
 	}
@@ -50,7 +51,7 @@ func (c *Controller) Login(ctx *gin.Context) {
 // @Summary GetAccessTokenByRefreshToken UserName
 // @Description Auth user by email and password
 // @Param data body AccessTokenRequest true "body data"
-// @Success 200 {object} useCaseAuth.DataUserAuthenticated
+// @Success 200 {object} userDomain.SecurityAuthenticatedUser
 // @Failure 400 {object} controllers.MessageResponse
 // @Failure 500 {object} controllers.MessageResponse
 // @Router /auth/access-token [post]

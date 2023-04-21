@@ -8,6 +8,7 @@ import (
 
 	useCaseUser "hacktiv/final-project/application/usecases/user"
 	errorDomain "hacktiv/final-project/domain/errors"
+	userDomain "hacktiv/final-project/domain/user"
 	"hacktiv/final-project/infrastructure/restapi/controllers"
 
 	"github.com/gin-gonic/gin"
@@ -25,13 +26,13 @@ type Controller struct {
 // @Security ApiKeyAuth
 // @Accept  json
 // @Produce  json
-// @Param data body NewUserRequest true "body data"
+// @Param data body NewUser true "body data"
 // @Success 200 {object} ResponseUser
-// @Failure 400 {object} MessageResponse
-// @Failure 500 {object} MessageResponse
+// @Failure 400 {object} controllers.MessageResponse
+// @Failure 500 {object} controllers.MessageResponse
 // @Router /user [post]
 func (c *Controller) NewUser(ctx *gin.Context) {
-	var request NewUserRequest
+	var request userDomain.NewUser
 
 	if err := controllers.BindJSON(ctx, &request); err != nil {
 		appError := errorDomain.NewAppError(err, errorDomain.ValidationError)
@@ -46,12 +47,12 @@ func (c *Controller) NewUser(ctx *gin.Context) {
 		return
 	}
 
-	userModel, err := c.UserService.Create(toUsecaseMapper(&request))
+	user, err := c.UserService.Create(request)
 	if err != nil {
 		_ = ctx.Error(err)
 		return
 	}
-	userResponse := domainToResponseMapper(userModel)
+	userResponse := user.DomainToResponseMapper()
 	ctx.JSON(http.StatusOK, userResponse)
 }
 
@@ -61,8 +62,8 @@ func (c *Controller) NewUser(ctx *gin.Context) {
 // @Security ApiKeyAuth
 // @Description Get all Users on the system
 // @Success 200 {object} []ResponseUser
-// @Failure 400 {object} MessageResponse
-// @Failure 500 {object} MessageResponse
+// @Failure 400 {object} controllers.MessageResponse
+// @Failure 500 {object} controllers.MessageResponse
 // @Router /user [get]
 func (c *Controller) GetAllUsers(ctx *gin.Context) {
 	users, err := c.UserService.GetAll()
@@ -72,7 +73,7 @@ func (c *Controller) GetAllUsers(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, arrayDomainToResponseMapper(users))
+	ctx.JSON(http.StatusOK, userDomain.ArrayDomainToResponseMapper(users))
 }
 
 // GetUsersByID godoc
@@ -82,8 +83,8 @@ func (c *Controller) GetAllUsers(ctx *gin.Context) {
 // @Param user_id path int true "id of user"
 // @Security ApiKeyAuth
 // @Success 200 {object} ResponseUser
-// @Failure 400 {object} MessageResponse
-// @Failure 500 {object} MessageResponse
+// @Failure 400 {object} controllers.MessageResponse
+// @Failure 500 {object} controllers.MessageResponse
 // @Router /user/{user_id} [get]
 func (c *Controller) GetUsersByID(ctx *gin.Context) {
 	userID, err := strconv.Atoi(ctx.Param("id"))
@@ -93,14 +94,14 @@ func (c *Controller) GetUsersByID(ctx *gin.Context) {
 		return
 	}
 
-	user, err := c.UserService.GetWithRole(userID)
+	userRole, err := c.UserService.GetWithRole(userID)
 	if err != nil {
 		appError := errorDomain.NewAppError(err, errorDomain.ValidationError)
 		_ = ctx.Error(appError)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, userRoleDomainToResponseMapper(user))
+	ctx.JSON(http.StatusOK, userRole)
 }
 
 // UpdateUser godoc
@@ -110,8 +111,8 @@ func (c *Controller) GetUsersByID(ctx *gin.Context) {
 // @Param user_id path int true "id of user"
 // @Security ApiKeyAuth
 // @Success 200 {object} ResponseUser
-// @Failure 400 {object} MessageResponse
-// @Failure 500 {object} MessageResponse
+// @Failure 400 {object} controllers.MessageResponse
+// @Failure 500 {object} controllers.MessageResponse
 // @Router /user/{user_id} [get]
 func (c *Controller) UpdateUser(ctx *gin.Context) {
 	userID, err := strconv.Atoi(ctx.Param("id"))
@@ -140,7 +141,7 @@ func (c *Controller) UpdateUser(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, domainToResponseMapper(user))
+	ctx.JSON(http.StatusOK, user.DomainToResponseMapper())
 }
 
 // DeleteUser godoc
@@ -149,9 +150,9 @@ func (c *Controller) UpdateUser(ctx *gin.Context) {
 // @Description Get Users by ID on the system
 // @Param user_id path int true "id of user"
 // @Security ApiKeyAuth
-// @Success 200 {object} MessageResponse
-// @Failure 400 {object} MessageResponse
-// @Failure 500 {object} MessageResponse
+// @Success 200 {object} controllers.MessageResponse
+// @Failure 400 {object} controllers.MessageResponse
+// @Failure 500 {object} controllers.MessageResponse
 // @Router /user/{user_id} [get]
 func (c *Controller) DeleteUser(ctx *gin.Context) {
 	userID, err := strconv.Atoi(ctx.Param("id"))

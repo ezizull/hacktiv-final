@@ -38,7 +38,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/auth.DataUserAuthenticated"
+                            "$ref": "#/definitions/user.SecurityAuthenticatedUser"
                         }
                     },
                     "400": {
@@ -78,7 +78,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/auth.DataUserAuthenticated"
+                            "$ref": "#/definitions/user.SecurityAuthenticatedUser"
                         }
                     },
                     "400": {
@@ -169,7 +169,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/secure_challenge-3_domain_book.Book"
+                            "$ref": "#/definitions/hacktiv_final-project_domain_book.Book"
                         }
                     },
                     "400": {
@@ -206,7 +206,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/secure_challenge-3_domain_book.Book"
+                            "$ref": "#/definitions/hacktiv_final-project_domain_book.Book"
                         }
                     },
                     "400": {
@@ -249,13 +249,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/user.MessageResponse"
+                            "$ref": "#/definitions/controllers.MessageResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/user.MessageResponse"
+                            "$ref": "#/definitions/controllers.MessageResponse"
                         }
                     }
                 }
@@ -284,7 +284,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/user.NewUserRequest"
+                            "$ref": "#/definitions/user.NewUser"
                         }
                     }
                 ],
@@ -298,13 +298,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/user.MessageResponse"
+                            "$ref": "#/definitions/controllers.MessageResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/user.MessageResponse"
+                            "$ref": "#/definitions/controllers.MessageResponse"
                         }
                     }
                 }
@@ -335,19 +335,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/user.MessageResponse"
+                            "$ref": "#/definitions/controllers.MessageResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/user.MessageResponse"
+                            "$ref": "#/definitions/controllers.MessageResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/user.MessageResponse"
+                            "$ref": "#/definitions/controllers.MessageResponse"
                         }
                     }
                 }
@@ -364,38 +364,6 @@ const docTemplate = `{
                 "refreshToken": {
                     "type": "string",
                     "example": "badbunybabybebe"
-                }
-            }
-        },
-        "auth.DataUserAuthenticated": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string",
-                    "example": "some@mail.com"
-                },
-                "firstName": {
-                    "type": "string",
-                    "example": "John"
-                },
-                "id": {
-                    "type": "integer",
-                    "example": 123
-                },
-                "lastName": {
-                    "type": "string",
-                    "example": "Doe"
-                },
-                "role": {
-                    "$ref": "#/definitions/secure_challenge-3_domain_role.Role"
-                },
-                "role_id": {
-                    "type": "string",
-                    "example": "admin"
-                },
-                "userName": {
-                    "type": "string",
-                    "example": "UserName"
                 }
             }
         },
@@ -450,7 +418,7 @@ const docTemplate = `{
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/secure_challenge-3_domain_book.Book"
+                        "$ref": "#/definitions/hacktiv_final-project_domain_book.Book"
                     }
                 },
                 "limit": {
@@ -478,7 +446,7 @@ const docTemplate = `{
                 }
             }
         },
-        "secure_challenge-3_domain_book.Book": {
+        "hacktiv_final-project_domain_book.Book": {
             "type": "object",
             "properties": {
                 "createdAt": {
@@ -506,61 +474,74 @@ const docTemplate = `{
                 }
             }
         },
-        "secure_challenge-3_domain_role.Role": {
+        "user.DataSecurityAuthenticated": {
             "type": "object",
             "properties": {
-                "createdAt": {
-                    "type": "string"
+                "expirationAccessDateTime": {
+                    "type": "string",
+                    "example": "2023-02-02T21:03:53.196419-06:00"
                 },
-                "id": {
-                    "type": "integer"
+                "expirationRefreshDateTime": {
+                    "type": "string",
+                    "example": "2023-02-03T06:53:53.196419-06:00"
                 },
-                "name": {
-                    "type": "string"
+                "jwtAccessToken": {
+                    "type": "string",
+                    "example": "SomeAccessToken"
                 },
-                "updatedAt": {
-                    "type": "string"
+                "jwtRefreshToken": {
+                    "type": "string",
+                    "example": "SomeRefreshToken"
                 }
             }
         },
-        "user.MessageResponse": {
+        "user.DataUserAuthenticated": {
             "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
-        "user.NewUserRequest": {
-            "type": "object",
-            "required": [
-                "email",
-                "firstName",
-                "lastName",
-                "password",
-                "role_id",
-                "username"
-            ],
             "properties": {
                 "email": {
                     "type": "string",
+                    "example": "some@mail.com"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 123
+                },
+                "role": {
+                    "$ref": "#/definitions/user.Role"
+                },
+                "role_id": {
+                    "type": "string",
+                    "example": "admin"
+                },
+                "userName": {
+                    "type": "string",
+                    "example": "UserName"
+                }
+            }
+        },
+        "user.NewUser": {
+            "type": "object",
+            "required": [
+                "age",
+                "email",
+                "password",
+                "username"
+            ],
+            "properties": {
+                "age": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "email": {
+                    "type": "string",
                     "example": "mail@mail.com"
-                },
-                "firstName": {
-                    "type": "string",
-                    "example": "John"
-                },
-                "lastName": {
-                    "type": "string",
-                    "example": "Doe"
                 },
                 "password": {
                     "type": "string",
                     "example": "Password123"
                 },
                 "role_id": {
-                    "type": "string",
-                    "example": "admin"
+                    "type": "string"
                 },
                 "username": {
                     "type": "string",
@@ -598,6 +579,34 @@ const docTemplate = `{
                 "user": {
                     "type": "string",
                     "example": "BossonH"
+                }
+            }
+        },
+        "user.Role": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.SecurityAuthenticatedUser": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/user.DataUserAuthenticated"
+                },
+                "security": {
+                    "$ref": "#/definitions/user.DataSecurityAuthenticated"
                 }
             }
         }
