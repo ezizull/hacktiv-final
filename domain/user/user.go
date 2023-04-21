@@ -6,8 +6,8 @@ import "time"
 // User is a struct that contains the user information
 type User struct {
 	ID           int       `json:"id" example:"1099" gorm:"primaryKey"`
-	UserName     string    `json:"userName" example:"UserName" gorm:"column:user_name;unique"`
-	Email        string    `json:"email" example:"some@mail.com" gorm:"unique"`
+	UserName     string    `json:"userName" example:"UserName" gorm:"column:user_name;uniqueIndex"`
+	Email        string    `json:"email" example:"some@mail.com" gorm:"unique;uniqueIndex"`
 	HashPassword string    `json:"hash_password" example:"SomeHashPass"`
 	Age          int       `json:"age" example:"1" binding:"required"`
 	RoleID       string    `json:"role_id" gorm:"index"`

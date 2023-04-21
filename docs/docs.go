@@ -525,6 +525,7 @@ const docTemplate = `{
                 "age",
                 "email",
                 "password",
+                "role_id",
                 "username"
             ],
             "properties": {

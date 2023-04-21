@@ -60,6 +60,7 @@ func (s *Service) Delete(id int) error {
 }
 
 // Update is a function that updates a user by id
-func (s *Service) Update(id int, userMap map[string]interface{}) (*userDomain.User, error) {
-	return s.UserRepository.Update(id, userMap)
+func (s *Service) Update(id int, updateUser userDomain.UpdateUser) (*userDomain.User, error) {
+	user := updateUser.ToDomainMapper()
+	return s.UserRepository.Update(id, &user)
 }

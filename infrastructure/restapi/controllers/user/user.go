@@ -121,21 +121,21 @@ func (c *Controller) UpdateUser(ctx *gin.Context) {
 		_ = ctx.Error(appError)
 		return
 	}
-	var requestMap map[string]interface{}
+	var request userDomain.UpdateUser
 
-	err = controllers.BindJSONMap(ctx, &requestMap)
+	err = controllers.BindJSON(ctx, &request)
 	if err != nil {
 		appError := errorDomain.NewAppError(err, errorDomain.ValidationError)
 		_ = ctx.Error(appError)
 		return
 	}
-	err = updateValidation(requestMap)
+	err = updateValidation(&request)
 	if err != nil {
 		_ = ctx.Error(err)
 		return
 	}
 
-	user, err := c.UserService.Update(userID, requestMap)
+	user, err := c.UserService.Update(userID, request)
 	if err != nil {
 		_ = ctx.Error(err)
 		return
