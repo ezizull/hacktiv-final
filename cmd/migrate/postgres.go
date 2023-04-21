@@ -3,6 +3,7 @@ package migrate
 import (
 	"fmt"
 	"hacktiv/final-project/infrastructure/repository/postgres"
+	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -23,7 +24,7 @@ var PostgresCmd = &cobra.Command{
 				_ = fmt.Errorf("fatal error in migrating postgres: %s", err)
 				panic(err)
 			}
-			return
+			os.Exit(0)
 		}
 		cmd.Help()
 	},

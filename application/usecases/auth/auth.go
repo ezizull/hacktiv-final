@@ -62,8 +62,6 @@ func (s *Service) AccessTokenByRefreshToken(refreshToken string) (*userDomain.Se
 		return nil, err
 	}
 
-	fmt.Println("check ", claimsMap)
-
 	userMap := map[string]interface{}{"id": claimsMap["user_id"]}
 	userRole, err := s.UserRepository.GetWithRoleByMap(userMap)
 	if err != nil {
