@@ -4,14 +4,12 @@ import (
 	photoDomain "hacktiv/final-project/domain/photo"
 
 	photoRepository "hacktiv/final-project/infrastructure/repository/postgres/photo"
-	userRepository "hacktiv/final-project/infrastructure/repository/postgres/user"
 )
 
 // Service is a struct that contains the repository implementation for photo use case
 type Service struct {
 	PhotoTesting    photoRepository.PhotoTesting
 	PhotoRepository photoRepository.Repository
-	UserRepository  userRepository.Repository
 }
 
 // GetAll is a function that returns all photos

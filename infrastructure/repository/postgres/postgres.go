@@ -3,7 +3,6 @@ package postgres
 
 import (
 	"fmt"
-	bookDomain "hacktiv/final-project/domain/book"
 	commentDomain "hacktiv/final-project/domain/comment"
 	photoDomain "hacktiv/final-project/domain/photo"
 	sosmedDomain "hacktiv/final-project/domain/sosmed"
@@ -102,8 +101,6 @@ func initPostgreDB(inGormDB *gorm.DB, infoPg infoDatabasePostgreSQL) (*gorm.DB, 
 
 func MigratePostgre(inGormDB *gorm.DB) error {
 	tablesMigrate := []interface{}{
-		&bookDomain.Book{},
-
 		// user
 		&userDomain.User{},
 		&userDomain.Role{},

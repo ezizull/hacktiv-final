@@ -111,7 +111,7 @@ func (c *Controller) GetAllPhotos(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, photos)
 }
 
-// GetPhotosByID godoc
+// GetPhotoByID godoc
 // @Tags photo
 // @Summary Get photos by ID
 // @Description Get Photos by ID on the system
@@ -121,7 +121,7 @@ func (c *Controller) GetAllPhotos(ctx *gin.Context) {
 // @Failure 400 {object} controllers.MessageResponse
 // @Failure 500 {object} controllers.MessageResponse
 // @Router /photo/{photo_id} [get]
-func (c *Controller) GetPhotosByID(ctx *gin.Context) {
+func (c *Controller) GetPhotoByID(ctx *gin.Context) {
 	photoID, err := strconv.Atoi(ctx.Param("id"))
 	if err != nil {
 		appError := errorDomain.NewAppError(errors.New("photo id is invalid"), errorDomain.ValidationError)
