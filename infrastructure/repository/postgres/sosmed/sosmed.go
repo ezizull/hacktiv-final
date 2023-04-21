@@ -88,9 +88,7 @@ func (r *Repository) UserGetAll(page int64, userId int, limit int64) (*sosmedDom
 
 // Create ... Insert New data
 func (r *Repository) Create(newSocialMedia *sosmedDomain.SocialMedia) (createdSocialMedia *sosmedDomain.SocialMedia, err error) {
-	sosmed := sosmedDomain.FromDomainMapper(newSocialMedia)
-
-	tx := r.DB.Create(sosmed)
+	tx := r.DB.Create(newSocialMedia)
 
 	if tx.Error != nil {
 		byteErr, _ := json.Marshal(tx.Error)
@@ -108,7 +106,7 @@ func (r *Repository) Create(newSocialMedia *sosmedDomain.SocialMedia) (createdSo
 		return
 	}
 
-	createdSocialMedia = sosmed
+	createdSocialMedia = newSocialMedia
 	return
 }
 

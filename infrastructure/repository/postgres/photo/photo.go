@@ -88,9 +88,7 @@ func (r *Repository) UserGetAll(page int64, userId int, limit int64) (*photoDoma
 
 // Create ... Insert New data
 func (r *Repository) Create(newPhoto *photoDomain.Photo) (createdPhoto *photoDomain.Photo, err error) {
-	photo := photoDomain.FromDomainMapper(newPhoto)
-
-	tx := r.DB.Create(photo)
+	tx := r.DB.Create(newPhoto)
 
 	if tx.Error != nil {
 		byteErr, _ := json.Marshal(tx.Error)
@@ -108,7 +106,7 @@ func (r *Repository) Create(newPhoto *photoDomain.Photo) (createdPhoto *photoDom
 		return
 	}
 
-	createdPhoto = photo
+	createdPhoto = newPhoto
 	return
 }
 
