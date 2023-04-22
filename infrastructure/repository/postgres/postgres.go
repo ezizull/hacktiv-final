@@ -45,6 +45,16 @@ type infoDatabasePostgreSQL struct {
 	}
 }
 
+// Database cradential
+var (
+	hostname = os.Getenv("POSTGRES_HOST")
+	port     = os.Getenv("POSTGRES_PORT")
+	username = os.Getenv("POSTGRES_USER")
+	password = os.Getenv("POSTGRES_PASSWORD")
+	dbname   = os.Getenv("POSTGRES_DBNAME")
+	dbtime   = os.Getenv("POSTGRES_DBTIME")
+)
+
 func (infoDB *infoDatabasePostgreSQL) getPostgreConn(nameMap string) (err error) {
 
 	viper.SetConfigFile("config.json")
@@ -56,6 +66,34 @@ func (infoDB *infoDatabasePostgreSQL) getPostgreConn(nameMap string) (err error)
 	err = mapstructure.Decode(viper.GetStringMap(nameMap), infoDB)
 	if err != nil {
 		return
+	}
+
+	if hostname != "" {
+		infoDB.Read.Hostname = hostname
+		infoDB.Write.Hostname = hostname
+	}
+
+	if port != "" {
+		infoDB.Read.Port = port
+		infoDB.Write.Port = port
+	}
+	if username != "" {
+		infoDB.Read.Username = username
+		infoDB.Write.Username = username
+	}
+	if password != "" {
+		infoDB.Read.Password = password
+		infoDB.Write.Password = password
+	}
+
+	if dbname != "" {
+		infoDB.Read.Name = dbname
+		infoDB.Write.Name = dbname
+	}
+
+	if dbtime != "" {
+		infoDB.Read.Name = dbtime
+		infoDB.Write.Name = dbtime
 	}
 
 	infoDB.Read.DriverConn = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=%s",
