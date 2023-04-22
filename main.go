@@ -7,6 +7,7 @@ import (
 	"hacktiv/final-project/infrastructure/repository/postgres"
 	errorsController "hacktiv/final-project/infrastructure/restapi/controllers/errors"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -50,7 +51,14 @@ func startServer(router http.Handler) {
 		panic(err)
 
 	}
+
 	serverPort := fmt.Sprintf(":%s", viper.GetString("ServerPort"))
+
+	environment := os.Getenv("ENV")
+	if environment == "production" {
+		serverPort = ""
+	}
+
 	s := &http.Server{
 		Addr:           serverPort,
 		Handler:        router,

@@ -1,5 +1,5 @@
 {
-  "Environment": "production",
+  "Environment": "development",
   "ServerPort": 4000,
   "Secure": {
     "JWTAccessSecure": "accesskeyyoumayneedtochangeit",
