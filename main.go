@@ -38,8 +38,10 @@ func main() {
 	router.Use(errorsController.Handler)
 
 	// postgres routes
+	routes.ApplicationRootRouter(router, postgresDB)
 	routes.ApplicationV1Router(router, postgresDB)
 
+	// check environment
 	environment := os.Getenv("ENV")
 	if environment == "railway-production" {
 		router.Run()
