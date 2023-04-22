@@ -668,7 +668,8 @@ const docTemplate = `{
         "comment.NewComment": {
             "type": "object",
             "required": [
-                "message"
+                "message",
+                "photo_id"
             ],
             "properties": {
                 "message": {

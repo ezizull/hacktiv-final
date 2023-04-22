@@ -4,12 +4,14 @@ import (
 	commentDomain "hacktiv/final-project/domain/comment"
 
 	commentRepository "hacktiv/final-project/infrastructure/repository/postgres/comment"
+	photoRepository "hacktiv/final-project/infrastructure/repository/postgres/photo"
 )
 
 // Service is a struct that contains the repository implementation for comment use case
 type Service struct {
 	CommentTesting    commentRepository.CommentTesting
 	CommentRepository commentRepository.Repository
+	PhotoRepository   photoRepository.Repository
 }
 
 // GetAll is a function that returns all comments
@@ -62,6 +64,10 @@ func (s *Service) UserGetByID(id int, userId int) (*commentDomain.Comment, error
 
 // Create is a function that creates a comment
 func (s *Service) Create(comment *commentDomain.NewComment) (*commentDomain.Comment, error) {
+	_, err := s.PhotoRepository.GetByID(comment.PhotoID)
+	if err != nil {
+		return nil, err
+	}
 
 	commentModel := comment.ToDomainMapper()
 

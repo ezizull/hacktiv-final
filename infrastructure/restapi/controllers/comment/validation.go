@@ -29,5 +29,10 @@ func createValidation(request commentDomain.NewComment) (err error) {
 		return errors.New("Message cannot be empty")
 	}
 
+	// PhotoID please insert correct id
+	if request.PhotoID < 1 {
+		return errors.New("PhotoID please insert correct id")
+	}
+
 	return
 }

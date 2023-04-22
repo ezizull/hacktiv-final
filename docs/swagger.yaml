@@ -52,6 +52,7 @@ definitions:
         type: integer
     required:
     - message
+    - photo_id
     type: object
   comment.PaginationResultComment:
     properties:
