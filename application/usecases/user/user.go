@@ -37,7 +37,7 @@ func (s *Service) Create(newUser userDomain.NewUser) (*userDomain.User, error) {
 
 	_, err := s.RoleRepository.GetByID(newUser.RoleID)
 	if err != nil {
-		return &userDomain.User{}, errorDomain.NewAppError(errors.New("photo not found"), errorDomain.NotFound)
+		return &userDomain.User{}, errorDomain.NewAppError(errors.New("role not found"), errorDomain.NotFound)
 	}
 
 	user := newUser.ToDomainMapper()
