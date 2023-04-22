@@ -40,7 +40,14 @@ func main() {
 	// postgres routes
 	routes.ApplicationV1Router(router, postgresDB)
 
-	startServer(router)
+	environment := os.Getenv("ENV")
+	if environment == "railway-production" {
+		router.Run()
+
+	} else {
+		startServer(router)
+
+	}
 }
 
 func startServer(router *gin.Engine) {
@@ -51,24 +58,18 @@ func startServer(router *gin.Engine) {
 
 	}
 
-	environment := os.Getenv("ENV")
-	if environment == "production" {
-		router.Run()
+	serverPort := fmt.Sprintf(":%s", viper.GetString("ServerPort"))
+	s := &http.Server{
+		Addr:           serverPort,
+		Handler:        router,
+		ReadTimeout:    18000 * time.Second,
+		WriteTimeout:   18000 * time.Second,
+		MaxHeaderBytes: 1000 << 20,
+	}
 
-	} else {
-		serverPort := fmt.Sprintf(":%s", viper.GetString("ServerPort"))
-		s := &http.Server{
-			Addr:           serverPort,
-			Handler:        router,
-			ReadTimeout:    18000 * time.Second,
-			WriteTimeout:   18000 * time.Second,
-			MaxHeaderBytes: 1000 << 20,
-		}
-
-		if err := s.ListenAndServe(); err != nil {
-			_ = fmt.Errorf("fatal error description: %s", strings.ToLower(err.Error()))
-			panic(err)
-		}
+	if err := s.ListenAndServe(); err != nil {
+		_ = fmt.Errorf("fatal error description: %s", strings.ToLower(err.Error()))
+		panic(err)
 	}
 
 }
