@@ -810,6 +810,45 @@ const docTemplate = `{
                 }
             }
         },
+        "photo.ResponsePhotoComments": {
+            "type": "object",
+            "properties": {
+                "caption": {
+                    "type": "string",
+                    "example": "caption"
+                },
+                "comments": {
+                    "$ref": "#/definitions/comment.PaginationResultComment"
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2021-02-24 20:19:39"
+                },
+                "deleted_at": {
+                    "type": "string",
+                    "example": "2021-02-24 20:19:39"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1099
+                },
+                "photo_url": {
+                    "type": "string",
+                    "example": "www.photo.com"
+                },
+                "title": {
+                    "type": "string",
+                    "example": "title"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2021-02-24 20:19:39"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "sosmed.NewSocialMedia": {
             "type": "object",
             "required": [

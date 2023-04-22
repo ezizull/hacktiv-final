@@ -141,7 +141,7 @@ func (c *Controller) GetAllOwnPhotos(ctx *gin.Context) {
 // @Description Get Photos by ID on the system
 // @Param photo_id path int true "id of photo"
 // @Security ApiKeyAuth
-// @Success 200 {object} photoDomain.Photo
+// @Success 200 {object} photoDomain.ResponsePhotoComments
 // @Failure 400 {object} controllers.MessageResponse
 // @Failure 500 {object} controllers.MessageResponse
 // @Router /photo/{photo_id} [get]

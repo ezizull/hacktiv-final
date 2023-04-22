@@ -101,7 +101,7 @@ func (r *Repository) GetWithComments(id int, page int64, limit int64) (*photoDom
 	offset := (page - 1) * limit
 	photoComments.ID = id
 
-	err = r.DB.Preload("Comment").Offset(int(offset)).Limit(int(limit)).Find(&photoComments).Error
+	err = r.DB.Model(&photoDomain.Photo{}).Preload("Comment").Limit(int(limit)).Offset(int(offset)).First(&photoComments).Error
 	if err != nil {
 		switch err.Error() {
 		case gorm.ErrRecordNotFound.Error():

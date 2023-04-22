@@ -140,6 +140,34 @@ definitions:
       user_id:
         type: integer
     type: object
+  photo.ResponsePhotoComments:
+    properties:
+      caption:
+        example: caption
+        type: string
+      comments:
+        $ref: '#/definitions/comment.PaginationResultComment'
+      created_at:
+        example: "2021-02-24 20:19:39"
+        type: string
+      deleted_at:
+        example: "2021-02-24 20:19:39"
+        type: string
+      id:
+        example: 1099
+        type: integer
+      photo_url:
+        example: www.photo.com
+        type: string
+      title:
+        example: title
+        type: string
+      updated_at:
+        example: "2021-02-24 20:19:39"
+        type: string
+      user_id:
+        type: integer
+    type: object
   sosmed.NewSocialMedia:
     properties:
       name:

@@ -3,6 +3,7 @@ package comment
 import (
 	"errors"
 	commentDomain "hacktiv/final-project/domain/comment"
+	errorDomain "hacktiv/final-project/domain/errors"
 
 	commentRepository "hacktiv/final-project/infrastructure/repository/postgres/comment"
 	photoRepository "hacktiv/final-project/infrastructure/repository/postgres/photo"
@@ -35,7 +36,7 @@ func (s *Service) GetAll(page int64, limit int64) (*commentDomain.PaginationResu
 }
 
 // UserGetAll is a function that returns all comments
-func (s *Service) UserGetAll(page int64, userId int, limit int64) (*commentDomain.PaginationResultComment, error) {
+func (s *Service) UserGetAll(userId int, page int64, limit int64) (*commentDomain.PaginationResultComment, error) {
 
 	all, err := s.CommentRepository.UserGetAll(userId, page, limit)
 	if err != nil {
@@ -68,7 +69,7 @@ func (s *Service) Create(comment *commentDomain.NewComment) (*commentDomain.Comm
 
 	_, err := s.PhotoRepository.GetByID(comment.PhotoID)
 	if err != nil {
-		return nil, errors.New("photo not found")
+		return nil, errorDomain.NewAppError(errors.New("photo not found"), errorDomain.NotFound)
 	}
 
 	commentModel := comment.ToDomainMapper()

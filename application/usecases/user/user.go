@@ -3,6 +3,7 @@ package user
 
 import (
 	"errors"
+	errorDomain "hacktiv/final-project/domain/errors"
 	userDomain "hacktiv/final-project/domain/user"
 	roleRepository "hacktiv/final-project/infrastructure/repository/postgres/role"
 	userRepository "hacktiv/final-project/infrastructure/repository/postgres/user"
@@ -36,7 +37,7 @@ func (s *Service) Create(newUser userDomain.NewUser) (*userDomain.User, error) {
 
 	_, err := s.RoleRepository.GetByID(newUser.RoleID)
 	if err != nil {
-		return &userDomain.User{}, errors.New("role not found")
+		return &userDomain.User{}, errorDomain.NewAppError(errors.New("photo not found"), errorDomain.NotFound)
 	}
 
 	user := newUser.ToDomainMapper()
