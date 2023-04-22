@@ -40,7 +40,8 @@ func main() {
 	// postgres routes
 	routes.ApplicationV1Router(router, postgresDB)
 
-	startServer(router)
+	// startServer(router)
+	router.Run()
 
 }
 
