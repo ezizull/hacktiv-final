@@ -92,8 +92,8 @@ func (infoDB *infoDatabasePostgreSQL) getPostgreConn(nameMap string) (err error)
 	}
 
 	if dbtime != "" {
-		infoDB.Read.Name = dbtime
-		infoDB.Write.Name = dbtime
+		infoDB.Read.Timezone = dbtime
+		infoDB.Write.Timezone = dbtime
 	}
 
 	infoDB.Read.DriverConn = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=%s",
