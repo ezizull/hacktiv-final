@@ -5,6 +5,7 @@ import (
 	// swaggerFiles for documentation
 	_ "hacktiv/final-project/docs"
 	"hacktiv/final-project/infrastructure/restapi/adapter"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -22,7 +23,9 @@ func ApplicationRootRouter(router *gin.Engine, db *gorm.DB) {
 	// Documentation Swagger
 	{
 		router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-		router.GET("/", ginSwagger.WrapHandler(swaggerFiles.Handler))
+		router.GET("/", func(c *gin.Context) {
+			c.Redirect(http.StatusMovedPermanently, "/swagger/index.html")
+		})
 	}
 }
 
