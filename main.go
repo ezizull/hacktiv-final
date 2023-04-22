@@ -52,20 +52,27 @@ func startServer(router http.Handler) {
 
 	}
 
-	serverPort := fmt.Sprintf(":%s", viper.GetString("ServerPort"))
+	var s *http.Server
 
 	environment := os.Getenv("ENV")
 	if environment == "production" {
-		serverPort = ""
+		s = &http.Server{
+			Handler:        router,
+			ReadTimeout:    18000 * time.Second,
+			WriteTimeout:   18000 * time.Second,
+			MaxHeaderBytes: 1000 << 20,
+		}
+	} else {
+		serverPort := fmt.Sprintf(":%s", viper.GetString("ServerPort"))
+		s = &http.Server{
+			Addr:           serverPort,
+			Handler:        router,
+			ReadTimeout:    18000 * time.Second,
+			WriteTimeout:   18000 * time.Second,
+			MaxHeaderBytes: 1000 << 20,
+		}
 	}
 
-	s := &http.Server{
-		Addr:           serverPort,
-		Handler:        router,
-		ReadTimeout:    18000 * time.Second,
-		WriteTimeout:   18000 * time.Second,
-		MaxHeaderBytes: 1 << 20,
-	}
 	if err := s.ListenAndServe(); err != nil {
 		_ = fmt.Errorf("fatal error description: %s", strings.ToLower(err.Error()))
 		panic(err)
