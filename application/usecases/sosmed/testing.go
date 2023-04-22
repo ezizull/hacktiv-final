@@ -7,7 +7,7 @@ import (
 
 type SocialMediaTesting interface {
 	GetAll(page int64, limit int64) (*sosmedDomain.PaginationResultSocialMedia, error)
-	UserGetAll(page int64, userId int, limit int64) (*sosmedDomain.PaginationResultSocialMedia, error)
+	UserGetAll(userId int, page int64, limit int64) (*sosmedDomain.PaginationResultSocialMedia, error)
 	GetByID(id int) (*sosmedDomain.SocialMedia, error)
 	UserGetByID(id int, userId int) (*sosmedDomain.SocialMedia, error)
 	Create(sosmed *sosmedDomain.NewSocialMedia) (*sosmedDomain.SocialMedia, error)

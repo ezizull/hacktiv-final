@@ -125,7 +125,7 @@ func (c *Controller) GetAllOwnSocialMedia(ctx *gin.Context) {
 		return
 	}
 
-	sosmeds, err := c.SocialMediaService.UserGetAll(page, authData.UserID, limit)
+	sosmeds, err := c.SocialMediaService.UserGetAll(authData.UserID, page, limit)
 	if err != nil {
 		appError := errorDomain.NewAppErrorWithType(errorDomain.UnknownError)
 		_ = ctx.Error(appError)

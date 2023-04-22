@@ -131,7 +131,7 @@ func (c *Controller) GetAllOwnComments(ctx *gin.Context) {
 		return
 	}
 
-	comments, err := c.CommentService.UserGetAll(page, authData.UserID, limit)
+	comments, err := c.CommentService.UserGetAll(authData.UserID, page, limit)
 	if err != nil {
 		appError := errorDomain.NewAppErrorWithType(errorDomain.UnknownError)
 		_ = ctx.Error(appError)
