@@ -51,7 +51,7 @@ func (r *Repository) GetAll(page int64, limit int64) (*sosmedDomain.PaginationRe
 }
 
 // UserGetAll Fetch all sosmed data
-func (r *Repository) UserGetAll(page int64, userId int, limit int64) (*sosmedDomain.PaginationResultSocialMedia, error) {
+func (r *Repository) UserGetAll(userId int, page int64, limit int64) (*sosmedDomain.PaginationResultSocialMedia, error) {
 	var sosmeds []sosmedDomain.SocialMedia
 	var total int64
 
@@ -84,30 +84,6 @@ func (r *Repository) UserGetAll(page int64, userId int, limit int64) (*sosmedDom
 		PrevCursor: prevCursor,
 		NumPages:   numPages,
 	}, nil
-}
-
-// Create ... Insert New data
-func (r *Repository) Create(newSocialMedia *sosmedDomain.SocialMedia) (createdSocialMedia *sosmedDomain.SocialMedia, err error) {
-	tx := r.DB.Create(newSocialMedia)
-
-	if tx.Error != nil {
-		byteErr, _ := json.Marshal(tx.Error)
-		var newError errorDomain.GormErr
-		err = json.Unmarshal(byteErr, &newError)
-		if err != nil {
-			return
-		}
-		switch newError.Number {
-		case 1062:
-			err = errorDomain.NewAppErrorWithType(errorDomain.ResourceAlreadyExists)
-		default:
-			err = errorDomain.NewAppErrorWithType(errorDomain.UnknownError)
-		}
-		return
-	}
-
-	createdSocialMedia = newSocialMedia
-	return
 }
 
 // GetByID ... Fetch only one sosmed by Id
@@ -156,6 +132,30 @@ func (r *Repository) GetOneByMap(sosmedMap map[string]interface{}) (*sosmedDomai
 		return nil, err
 	}
 	return &sosmed, err
+}
+
+// Create ... Insert New data
+func (r *Repository) Create(newSocialMedia *sosmedDomain.SocialMedia) (createdSocialMedia *sosmedDomain.SocialMedia, err error) {
+	tx := r.DB.Create(newSocialMedia)
+
+	if tx.Error != nil {
+		byteErr, _ := json.Marshal(tx.Error)
+		var newError errorDomain.GormErr
+		err = json.Unmarshal(byteErr, &newError)
+		if err != nil {
+			return
+		}
+		switch newError.Number {
+		case 1062:
+			err = errorDomain.NewAppErrorWithType(errorDomain.ResourceAlreadyExists)
+		default:
+			err = errorDomain.NewAppErrorWithType(errorDomain.UnknownError)
+		}
+		return
+	}
+
+	createdSocialMedia = newSocialMedia
+	return
 }
 
 // Update ... Update sosmed

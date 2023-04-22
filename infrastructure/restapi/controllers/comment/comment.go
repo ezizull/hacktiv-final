@@ -85,6 +85,13 @@ func (c *Controller) GetAllComments(ctx *gin.Context) {
 		return
 	}
 
+	var request commentDomain.GetComment
+	if err := controllers.BindJSON(ctx, &request); err != nil {
+		appError := errorDomain.NewAppError(err, errorDomain.ValidationError)
+		_ = ctx.Error(appError)
+		return
+	}
+
 	comments, err := c.CommentService.GetAll(page, limit)
 	if err != nil {
 		appError := errorDomain.NewAppErrorWithType(errorDomain.UnknownError)

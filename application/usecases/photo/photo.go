@@ -32,9 +32,9 @@ func (s *Service) GetAll(page int64, limit int64) (*photoDomain.PaginationResult
 }
 
 // UserGetAll is a function that returns all photos
-func (s *Service) UserGetAll(page int64, userId int, limit int64) (*photoDomain.PaginationResultPhoto, error) {
+func (s *Service) UserGetAll(userId int, page int64, limit int64) (*photoDomain.PaginationResultPhoto, error) {
 
-	all, err := s.PhotoRepository.UserGetAll(page, userId, limit)
+	all, err := s.PhotoRepository.UserGetAll(userId, page, limit)
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +50,12 @@ func (s *Service) UserGetAll(page int64, userId int, limit int64) (*photoDomain.
 	}, nil
 }
 
-// GetByID is a function that returns a photo by id
+// GetWithComments is a function that returns a photo by id
+func (s *Service) GetWithComments(id int, page int64, limit int64) (*photoDomain.ResponsePhotoComments, error) {
+	return s.PhotoRepository.GetWithComments(id, page, limit)
+}
+
+// GetByID is a function that returns a photo with comments by id
 func (s *Service) GetByID(id int) (*photoDomain.Photo, error) {
 	return s.PhotoRepository.GetByID(id)
 }

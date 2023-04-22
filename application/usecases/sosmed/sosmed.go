@@ -34,7 +34,7 @@ func (s *Service) GetAll(page int64, limit int64) (*sosmedDomain.PaginationResul
 // UserGetAll is a function that returns all sosmeds
 func (s *Service) UserGetAll(page int64, userId int, limit int64) (*sosmedDomain.PaginationResultSocialMedia, error) {
 
-	all, err := s.SocialMediaRepository.UserGetAll(page, userId, limit)
+	all, err := s.SocialMediaRepository.UserGetAll(userId, page, limit)
 	if err != nil {
 		return nil, err
 	}

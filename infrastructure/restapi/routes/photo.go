@@ -16,6 +16,7 @@ func PhotoRoutes(router *gin.RouterGroup, controller *photoController.Controller
 	{
 		routerPhoto.GET("", controller.GetAllPhotos)
 		routerPhoto.GET("/own", controller.GetAllOwnPhotos)
+		routerPhoto.GET("/:id/comments", controller.GetPhotoWithComments)
 		routerPhoto.GET("/:id", controller.GetPhotoByID)
 		routerPhoto.POST("", controller.NewPhoto)
 		routerPhoto.PUT("/:id", controller.UpdatePhoto)

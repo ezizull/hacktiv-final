@@ -1,5 +1,10 @@
 package comment
 
+// GetComment is a struct that contains the data for new social media
+type GetComment struct {
+	PhotoID int `json:"photo_id" gorm:"index" binding:"required"`
+}
+
 // NewComment is a struct that contains the data for new social media
 type NewComment struct {
 	UserID  int    `json:"user_id" gorm:"index" binding:"-"`

@@ -125,7 +125,7 @@ func (c *Controller) GetAllOwnPhotos(ctx *gin.Context) {
 		return
 	}
 
-	photos, err := c.PhotoService.UserGetAll(page, authData.UserID, limit)
+	photos, err := c.PhotoService.UserGetAll(authData.UserID, page, limit)
 	if err != nil {
 		appError := errorDomain.NewAppErrorWithType(errorDomain.UnknownError)
 		_ = ctx.Error(appError)
@@ -133,6 +133,50 @@ func (c *Controller) GetAllOwnPhotos(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, photos)
+}
+
+// GetPhotoWithComments godoc
+// @Tags photo
+// @Summary Get photos by ID
+// @Description Get Photos by ID on the system
+// @Param photo_id path int true "id of photo"
+// @Security ApiKeyAuth
+// @Success 200 {object} photoDomain.Photo
+// @Failure 400 {object} controllers.MessageResponse
+// @Failure 500 {object} controllers.MessageResponse
+// @Router /photo/{photo_id} [get]
+func (c *Controller) GetPhotoWithComments(ctx *gin.Context) {
+	photoID, err := strconv.Atoi(ctx.Param("id"))
+	if err != nil {
+		appError := errorDomain.NewAppError(errors.New("photo id is invalid"), errorDomain.ValidationError)
+		_ = ctx.Error(appError)
+		return
+	}
+
+	pageStr := ctx.DefaultQuery("page", "1")
+	limitStr := ctx.DefaultQuery("limit", "20")
+
+	page, err := strconv.ParseInt(pageStr, 10, 64)
+	if err != nil {
+		appError := errorDomain.NewAppError(errors.New("param page is necessary to be an integer"), errorDomain.ValidationError)
+		_ = ctx.Error(appError)
+		return
+	}
+	limit, err := strconv.ParseInt(limitStr, 10, 64)
+	if err != nil {
+		appError := errorDomain.NewAppError(errors.New("param limit is necessary to be an integer"), errorDomain.ValidationError)
+		_ = ctx.Error(appError)
+		return
+	}
+
+	photo, err := c.PhotoService.GetWithComments(photoID, page, limit)
+	if err != nil {
+		appError := errorDomain.NewAppError(err, errorDomain.ValidationError)
+		_ = ctx.Error(appError)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, photo)
 }
 
 // GetPhotoByID godoc

@@ -36,3 +36,12 @@ func createValidation(request commentDomain.NewComment) (err error) {
 
 	return
 }
+
+func getValidation(request commentDomain.GetComment) (err error) {
+	// PhotoID please insert correct id
+	if request.PhotoID < 1 {
+		return errors.New("PhotoID please insert correct id")
+	}
+
+	return
+}

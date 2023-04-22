@@ -2,6 +2,7 @@ package photo
 
 import (
 	"encoding/json"
+	commentDomain "hacktiv/final-project/domain/comment"
 	errorDomain "hacktiv/final-project/domain/errors"
 	photoDomain "hacktiv/final-project/domain/photo"
 	"log"
@@ -51,7 +52,7 @@ func (r *Repository) GetAll(page int64, limit int64) (*photoDomain.PaginationRes
 }
 
 // UserGetAll Fetch all photo data
-func (r *Repository) UserGetAll(page int64, userId int, limit int64) (*photoDomain.PaginationResultPhoto, error) {
+func (r *Repository) UserGetAll(userId int, page int64, limit int64) (*photoDomain.PaginationResultPhoto, error) {
 	var photos []photoDomain.Photo
 	var total int64
 
@@ -59,9 +60,10 @@ func (r *Repository) UserGetAll(page int64, userId int, limit int64) (*photoDoma
 	if err != nil {
 		return &photoDomain.PaginationResultPhoto{}, err
 	}
-	offset := (page - 1) * limit
-	err = r.DB.Limit(int(limit)).Offset(int(offset)).Find(&photos).Error
 
+	offset := (page - 1) * limit
+
+	err = r.DB.Limit(int(limit)).Offset(int(offset)).Find(&photos).Error
 	if err != nil {
 		return &photoDomain.PaginationResultPhoto{}, err
 	}
@@ -86,28 +88,53 @@ func (r *Repository) UserGetAll(page int64, userId int, limit int64) (*photoDoma
 	}, nil
 }
 
-// Create ... Insert New data
-func (r *Repository) Create(newPhoto *photoDomain.Photo) (createdPhoto *photoDomain.Photo, err error) {
-	tx := r.DB.Create(newPhoto)
+// GetWithComments ... Fetch a photo with comments by id
+func (r *Repository) GetWithComments(id int, page int64, limit int64) (*photoDomain.ResponsePhotoComments, error) {
+	var photoComments photoDomain.PhotoComment
+	var total int64
 
-	if tx.Error != nil {
-		byteErr, _ := json.Marshal(tx.Error)
-		var newError errorDomain.GormErr
-		err = json.Unmarshal(byteErr, &newError)
-		if err != nil {
-			return
-		}
-		switch newError.Number {
-		case 1062:
-			err = errorDomain.NewAppErrorWithType(errorDomain.ResourceAlreadyExists)
+	err := r.DB.Model(&commentDomain.Comment{}).Where("photo_id = ?", id).Count(&total).Error
+	if err != nil {
+		return &photoDomain.ResponsePhotoComments{}, err
+	}
+
+	offset := (page - 1) * limit
+	photoComments.ID = id
+
+	err = r.DB.Preload("Comment").Offset(int(offset)).Limit(int(limit)).Find(&photoComments).Error
+	if err != nil {
+		switch err.Error() {
+		case gorm.ErrRecordNotFound.Error():
+			err = errorDomain.NewAppErrorWithType(errorDomain.NotFound)
 		default:
 			err = errorDomain.NewAppErrorWithType(errorDomain.UnknownError)
 		}
-		return
+		return &photoDomain.ResponsePhotoComments{}, err
 	}
 
-	createdPhoto = newPhoto
-	return
+	numPages := (total + limit - 1) / limit
+	var nextCursor, prevCursor uint
+	if page < numPages {
+		nextCursor = uint(page + 1)
+	}
+	if page > 1 {
+		prevCursor = uint(page - 1)
+	}
+
+	comments := &commentDomain.PaginationResultComment{
+		Data:       commentDomain.ArrayToDomainMapper(&photoComments.Comment),
+		Total:      total,
+		Limit:      limit,
+		Current:    page,
+		NextCursor: nextCursor,
+		PrevCursor: prevCursor,
+		NumPages:   numPages,
+	}
+
+	return &photoDomain.ResponsePhotoComments{
+		Photo:    photoComments.Photo,
+		Comments: *comments,
+	}, nil
 }
 
 // GetByID ... Fetch only one photo by Id
@@ -156,6 +183,30 @@ func (r *Repository) GetOneByMap(photoMap map[string]interface{}) (*photoDomain.
 		return nil, err
 	}
 	return &photo, err
+}
+
+// Create ... Insert New data
+func (r *Repository) Create(newPhoto *photoDomain.Photo) (createdPhoto *photoDomain.Photo, err error) {
+	tx := r.DB.Create(newPhoto)
+
+	if tx.Error != nil {
+		byteErr, _ := json.Marshal(tx.Error)
+		var newError errorDomain.GormErr
+		err = json.Unmarshal(byteErr, &newError)
+		if err != nil {
+			return
+		}
+		switch newError.Number {
+		case 1062:
+			err = errorDomain.NewAppErrorWithType(errorDomain.ResourceAlreadyExists)
+		default:
+			err = errorDomain.NewAppErrorWithType(errorDomain.UnknownError)
+		}
+		return
+	}
+
+	createdPhoto = newPhoto
+	return
 }
 
 // Update ... Update photo

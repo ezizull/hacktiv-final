@@ -7,7 +7,8 @@ import (
 
 type PhotoTesting interface {
 	GetAll(page int64, limit int64) (*photoDomain.PaginationResultPhoto, error)
-	UserGetAll(page int64, userId int, limit int64) (*photoDomain.PaginationResultPhoto, error)
+	UserGetAll(userId int, page int64, limit int64) (*photoDomain.PaginationResultPhoto, error)
+	GetWithComments(id int, page int64, limit int64) (*photoDomain.ResponsePhotoComments, error)
 	GetByID(id int) (*photoDomain.Photo, error)
 	UserGetByID(id int, userId int) (*photoDomain.Photo, error)
 	Create(photo *photoDomain.NewPhoto) (*photoDomain.Photo, error)

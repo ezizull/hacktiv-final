@@ -51,7 +51,7 @@ func (r *Repository) GetAll(page int64, limit int64) (*commentDomain.PaginationR
 }
 
 // UserGetAll Fetch all comment data
-func (r *Repository) UserGetAll(page int64, userId int, limit int64) (*commentDomain.PaginationResultComment, error) {
+func (r *Repository) UserGetAll(userId int, page int64, limit int64) (*commentDomain.PaginationResultComment, error) {
 	var comments []commentDomain.Comment
 	var total int64
 
@@ -84,30 +84,6 @@ func (r *Repository) UserGetAll(page int64, userId int, limit int64) (*commentDo
 		PrevCursor: prevCursor,
 		NumPages:   numPages,
 	}, nil
-}
-
-// Create ... Insert New data
-func (r *Repository) Create(newComment *commentDomain.Comment) (createdComment *commentDomain.Comment, err error) {
-	tx := r.DB.Create(newComment)
-
-	if tx.Error != nil {
-		byteErr, _ := json.Marshal(tx.Error)
-		var newError errorDomain.GormErr
-		err = json.Unmarshal(byteErr, &newError)
-		if err != nil {
-			return
-		}
-		switch newError.Number {
-		case 1062:
-			err = errorDomain.NewAppErrorWithType(errorDomain.ResourceAlreadyExists)
-		default:
-			err = errorDomain.NewAppErrorWithType(errorDomain.UnknownError)
-		}
-		return
-	}
-
-	createdComment = newComment
-	return
 }
 
 // GetByID ... Fetch only one comment by Id
@@ -156,6 +132,30 @@ func (r *Repository) GetOneByMap(commentMap map[string]interface{}) (*commentDom
 		return nil, err
 	}
 	return &comment, err
+}
+
+// Create ... Insert New data
+func (r *Repository) Create(newComment *commentDomain.Comment) (createdComment *commentDomain.Comment, err error) {
+	tx := r.DB.Create(newComment)
+
+	if tx.Error != nil {
+		byteErr, _ := json.Marshal(tx.Error)
+		var newError errorDomain.GormErr
+		err = json.Unmarshal(byteErr, &newError)
+		if err != nil {
+			return
+		}
+		switch newError.Number {
+		case 1062:
+			err = errorDomain.NewAppErrorWithType(errorDomain.ResourceAlreadyExists)
+		default:
+			err = errorDomain.NewAppErrorWithType(errorDomain.UnknownError)
+		}
+		return
+	}
+
+	createdComment = newComment
+	return
 }
 
 // Update ... Update comment
