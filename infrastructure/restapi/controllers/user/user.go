@@ -8,6 +8,7 @@ import (
 
 	useCaseUser "hacktiv/final-project/application/usecases/user"
 	errorDomain "hacktiv/final-project/domain/errors"
+	secureDomain "hacktiv/final-project/domain/security"
 	userDomain "hacktiv/final-project/domain/user"
 	"hacktiv/final-project/infrastructure/restapi/controllers"
 
@@ -87,21 +88,40 @@ func (c *Controller) GetAllUsers(ctx *gin.Context) {
 // @Failure 500 {object} controllers.MessageResponse
 // @Router /user/{user_id} [get]
 func (c *Controller) GetUsersByID(ctx *gin.Context) {
-	userID, err := strconv.Atoi(ctx.Param("id"))
-	if err != nil {
-		appError := errorDomain.NewAppError(errors.New("user id is invalid"), errorDomain.ValidationError)
-		_ = ctx.Error(appError)
+	// Get your object from the context
+	authData := ctx.MustGet("Authorized").(secureDomain.Claims)
+
+	if authData.Role == "admin" {
+		userID, err := strconv.Atoi(ctx.Param("id"))
+		if err != nil {
+			appError := errorDomain.NewAppError(errors.New("user id is invalid"), errorDomain.ValidationError)
+			_ = ctx.Error(appError)
+			return
+		}
+
+		userRole, err := c.UserService.GetWithRole(userID)
+		if err != nil {
+			appError := errorDomain.NewAppError(err, errorDomain.ValidationError)
+			_ = ctx.Error(appError)
+			return
+		}
+
+		ctx.JSON(http.StatusOK, userRole)
 		return
+
+	} else {
+		userRole, err := c.UserService.GetWithRole(authData.UserID)
+		if err != nil {
+			appError := errorDomain.NewAppError(err, errorDomain.ValidationError)
+			_ = ctx.Error(appError)
+			return
+		}
+
+		ctx.JSON(http.StatusOK, userRole)
+		return
+
 	}
 
-	userRole, err := c.UserService.GetWithRole(userID)
-	if err != nil {
-		appError := errorDomain.NewAppError(err, errorDomain.ValidationError)
-		_ = ctx.Error(appError)
-		return
-	}
-
-	ctx.JSON(http.StatusOK, userRole)
 }
 
 // UpdateUser godoc
