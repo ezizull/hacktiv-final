@@ -6,10 +6,10 @@ import (
 	"net/http"
 	"strconv"
 
-	security "hacktiv/final-project/application/security/jwt"
 	useCasePhoto "hacktiv/final-project/application/usecases/photo"
 	errorDomain "hacktiv/final-project/domain/errors"
 	photoDomain "hacktiv/final-project/domain/photo"
+	secureDomain "hacktiv/final-project/domain/security"
 	"hacktiv/final-project/infrastructure/restapi/controllers"
 
 	"github.com/gin-gonic/gin"
@@ -34,7 +34,7 @@ type Controller struct {
 // @Router /photo [post]
 func (c *Controller) NewPhoto(ctx *gin.Context) {
 	// Get your object from the context
-	authData := ctx.MustGet("Auth").(security.Claims)
+	authData := ctx.MustGet("Auth").(secureDomain.Claims)
 
 	var request photoDomain.NewPhoto
 	if err := controllers.BindJSON(ctx, &request); err != nil {
@@ -107,7 +107,7 @@ func (c *Controller) GetAllPhotos(ctx *gin.Context) {
 // @Router /photo [get]
 func (c *Controller) GetAllOwnPhotos(ctx *gin.Context) {
 	// Get your object from the context
-	authData := ctx.MustGet("Auth").(security.Claims)
+	authData := ctx.MustGet("Auth").(secureDomain.Claims)
 
 	pageStr := ctx.DefaultQuery("page", "1")
 	limitStr := ctx.DefaultQuery("limit", "20")
@@ -219,7 +219,7 @@ func (c *Controller) GetPhotoByID(ctx *gin.Context) {
 // @Router /photo/{photo_id} [get]
 func (c *Controller) UpdatePhoto(ctx *gin.Context) {
 	// Get your object from the context
-	authData := ctx.MustGet("Auth").(security.Claims)
+	authData := ctx.MustGet("Auth").(secureDomain.Claims)
 
 	photoID, err := strconv.Atoi(ctx.Param("id"))
 	if err != nil {

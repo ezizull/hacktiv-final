@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	errorDomain "hacktiv/final-project/domain/errors"
+	secureDomain "hacktiv/final-project/domain/security"
 	"strconv"
 	"time"
 
@@ -12,48 +13,14 @@ import (
 	"github.com/spf13/viper"
 )
 
-const (
-	Access  = "access"
-	Refresh = "refresh"
-)
-
-// AppToken is a struct that contains the JWT token
-type AppToken struct {
-	Token          string    `json:"token"`
-	TokenType      string    `json:"type"`
-	ExpirationTime time.Time `json:"expitationTime"`
-}
-
-// Claims is a struct that contains the claims of the JWT
-type Claims struct {
-	UserID int    `json:"user_id"`
-	Type   string `json:"type"`
-	Role   string `json:"role"`
-	jwt.StandardClaims
-}
-
-// TokenTypeKeyName is a map that contains the key name of the JWT in config.json
-var TokenTypeKeyName = map[string]string{
-	Access:  "Secure.JWTAccessSecure",
-	Refresh: "Secure.JWTRefreshSecure",
-}
-
-// TokenTypeExpTime is a map that contains the expiration time of the JWT
-var TokenTypeExpTime = map[string]string{
-	Access:  "Secure.JWTAccessTimeMinute",
-	Refresh: "Secure.JWTRefreshTimeHour",
-}
-
 // GenerateJWTToken generates a JWT token (refresh or access)
-func GenerateJWTToken(userID int, tokenType string, roleName string) (appToken *AppToken, err error) {
+func GenerateJWTToken(userID int, tokenType string, roleName string) (appToken *secureDomain.AppToken, err error) {
 	viper.SetConfigFile("config.json")
 	if err := viper.ReadInConfig(); err != nil {
 		_ = fmt.Errorf("fatal error in config file: %s", err.Error())
 	}
 
-	JWTSecureKey := viper.GetString(TokenTypeKeyName[tokenType])
 	JWTExpTime := viper.GetString(TokenTypeExpTime[tokenType])
-
 	tokenTimeConverted, err := strconv.ParseInt(JWTExpTime, 10, 64)
 	if err != nil {
 		return
@@ -75,12 +42,11 @@ func GenerateJWTToken(userID int, tokenType string, roleName string) (appToken *
 	nowTime := time.Now()
 	expirationTokenTime := nowTime.Add(tokenTimeUnix)
 
-	tokenClaims := &Claims{
+	tokenClaims := &secureDomain.Claims{
 		UserID: userID,
 		Type:   tokenType,
 		Role:   roleName,
 		StandardClaims: jwt.StandardClaims{
-			// In JWT, the expiry time is expressed as unix milliseconds
 			ExpiresAt: expirationTokenTime.Unix(),
 			IssuedAt:  nowTime.UTC().Unix(),
 		},
@@ -88,12 +54,12 @@ func GenerateJWTToken(userID int, tokenType string, roleName string) (appToken *
 	tokenWithClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, tokenClaims)
 
 	// Sign and get the complete encoded token as a string using the secret
-	tokenStr, err := tokenWithClaims.SignedString([]byte(JWTSecureKey))
+	tokenStr, err := tokenWithClaims.SignedString(secureDomain.PrivateKey)
 	if err != nil {
 		return
 	}
 
-	appToken = &AppToken{
+	appToken = &secureDomain.AppToken{
 		Token:          tokenStr,
 		TokenType:      tokenType,
 		ExpirationTime: expirationTokenTime,
@@ -130,4 +96,9 @@ func GetClaimsAndVerifyToken(tokenString string, tokenType string) (claims jwt.M
 		return claims, nil
 	}
 	return nil, err
+}
+
+// ReGenerateCustomJWT regenerate jwt with custom modified data
+func ReGenerateCustomJWT() {
+
 }

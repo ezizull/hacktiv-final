@@ -11,8 +11,6 @@ import (
 	userDomain "hacktiv/final-project/domain/user"
 
 	userRepository "hacktiv/final-project/infrastructure/repository/postgres/user"
-
-	"golang.org/x/crypto/bcrypt"
 )
 
 // Service is a struct that contains the repository implementation for auth use case
@@ -85,10 +83,4 @@ func (s *Service) AccessTokenByRefreshToken(refreshToken string) (*userDomain.Se
 		RefreshToken:              refreshToken,
 		ExpirationRefreshDateTime: time.Unix(expTime, 0),
 	}), nil
-}
-
-// CheckPasswordHash compares a bcrypt hashed password with its possible plaintext equivalent.
-func CheckPasswordHash(password, hash string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-	return err == nil
 }

@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"net/http"
 
-	security "hacktiv/final-project/application/security/jwt"
 	"hacktiv/final-project/utils/lists"
+
+	secureDomain "hacktiv/final-project/domain/security"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
@@ -31,7 +32,7 @@ func AuthJWTMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		claims := &security.Claims{}
+		claims := &secureDomain.Claims{}
 		_, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
 			return signature, nil
 		})
@@ -52,7 +53,7 @@ func AuthJWTMiddleware() gin.HandlerFunc {
 func AuthRoleMiddleware(validRoles []string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Get your object from the context
-		authData := c.MustGet("Auth").(security.Claims)
+		authData := c.MustGet("Auth").(secureDomain.Claims)
 
 		if authData.Role == "" {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "You are not authorized"})

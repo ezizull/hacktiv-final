@@ -4,6 +4,7 @@ package main
 import (
 	"fmt"
 	"hacktiv/final-project/cmd"
+	secureDomain "hacktiv/final-project/domain/security"
 	"hacktiv/final-project/infrastructure/repository/postgres"
 	errorsController "hacktiv/final-project/infrastructure/restapi/controllers/errors"
 	"net/http"
@@ -36,6 +37,13 @@ func main() {
 	cmd.Execute(postgresDB)
 
 	router.Use(errorsController.Handler)
+
+	// getting key ssh
+	err = secureDomain.GettingKeySSH()
+	if err != nil {
+		_ = fmt.Errorf("fatal error in getting key ssh: %s", err)
+		panic(err)
+	}
 
 	// root routes
 	routes.ApplicationRootRouter(router, postgresDB)

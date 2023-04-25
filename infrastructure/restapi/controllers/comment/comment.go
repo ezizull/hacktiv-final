@@ -5,10 +5,10 @@ import (
 	"net/http"
 	"strconv"
 
-	security "hacktiv/final-project/application/security/jwt"
 	useCaseComment "hacktiv/final-project/application/usecases/comment"
 	commentDomain "hacktiv/final-project/domain/comment"
 	errorDomain "hacktiv/final-project/domain/errors"
+	secureDomain "hacktiv/final-project/domain/security"
 	"hacktiv/final-project/infrastructure/restapi/controllers"
 
 	"github.com/gin-gonic/gin"
@@ -33,7 +33,7 @@ type Controller struct {
 // @Router /comment [post]
 func (c *Controller) NewComment(ctx *gin.Context) {
 	// Get your object from the context
-	authData := ctx.MustGet("Auth").(security.Claims)
+	authData := ctx.MustGet("Auth").(secureDomain.Claims)
 
 	var request commentDomain.NewComment
 	if err := controllers.BindJSON(ctx, &request); err != nil {
@@ -113,7 +113,7 @@ func (c *Controller) GetAllComments(ctx *gin.Context) {
 // @Router /comment [get]
 func (c *Controller) GetAllOwnComments(ctx *gin.Context) {
 	// Get your object from the context
-	authData := ctx.MustGet("Auth").(security.Claims)
+	authData := ctx.MustGet("Auth").(secureDomain.Claims)
 
 	pageStr := ctx.DefaultQuery("page", "1")
 	limitStr := ctx.DefaultQuery("limit", "20")
@@ -181,7 +181,7 @@ func (c *Controller) GetCommentByID(ctx *gin.Context) {
 // @Router /comment/{comment_id} [get]
 func (c *Controller) UpdateComment(ctx *gin.Context) {
 	// Get your object from the context
-	authData := ctx.MustGet("Auth").(security.Claims)
+	authData := ctx.MustGet("Auth").(secureDomain.Claims)
 
 	commentID, err := strconv.Atoi(ctx.Param("id"))
 	if err != nil {
