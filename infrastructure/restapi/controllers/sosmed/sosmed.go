@@ -34,7 +34,7 @@ type Controller struct {
 // @Router /sosmed [post]
 func (c *Controller) NewSocialMedia(ctx *gin.Context) {
 	// Get your object from the context
-	authData := ctx.MustGet("Auth").(secureDomain.Claims)
+	authData := ctx.MustGet("Authorized").(secureDomain.Claims)
 
 	var request sosmedDomain.NewSocialMedia
 	if err := controllers.BindJSON(ctx, &request); err != nil {
@@ -107,7 +107,7 @@ func (c *Controller) GetAllSocialMedia(ctx *gin.Context) {
 // @Router /sosmed [get]
 func (c *Controller) GetAllOwnSocialMedia(ctx *gin.Context) {
 	// Get your object from the context
-	authData := ctx.MustGet("Auth").(secureDomain.Claims)
+	authData := ctx.MustGet("Authorized").(secureDomain.Claims)
 
 	pageStr := ctx.DefaultQuery("page", "1")
 	limitStr := ctx.DefaultQuery("limit", "20")
@@ -175,7 +175,7 @@ func (c *Controller) GetSocialMediaByID(ctx *gin.Context) {
 // @Router /sosmed/{sosmed_id} [get]
 func (c *Controller) UpdateSocialMedia(ctx *gin.Context) {
 	// Get your object from the context
-	authData := ctx.MustGet("Auth").(secureDomain.Claims)
+	authData := ctx.MustGet("Authorized").(secureDomain.Claims)
 
 	sosmedID, err := strconv.Atoi(ctx.Param("id"))
 	if err != nil {

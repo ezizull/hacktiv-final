@@ -6,52 +6,32 @@ import (
 	"fmt"
 	errorDomain "hacktiv/final-project/domain/errors"
 	secureDomain "hacktiv/final-project/domain/security"
-	"strconv"
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
-	"github.com/spf13/viper"
 )
 
 // GenerateJWTToken generates a JWT token (refresh or access)
-func GenerateJWTToken(userID int, tokenType string, roleName string) (appToken *secureDomain.AppToken, err error) {
-	viper.SetConfigFile("config.json")
-	if err := viper.ReadInConfig(); err != nil {
-		_ = fmt.Errorf("fatal error in config file: %s", err.Error())
-	}
-
-	JWTExpTime := viper.GetString(TokenTypeExpTime[tokenType])
-	tokenTimeConverted, err := strconv.ParseInt(JWTExpTime, 10, 64)
+func GenerateJWTToken(userID int, tokenType string, roleName string, CSRF string) (appToken *secureDomain.AppToken, err error) {
+	tokenTimeUnix, err := getTimeExpire(tokenType)
 	if err != nil {
 		return
 	}
 
-	tokenTimeUnix := time.Duration(tokenTimeConverted)
-	switch tokenType {
-	case Refresh:
-		tokenTimeUnix *= time.Hour
-	case Access:
-		tokenTimeUnix *= time.Minute
-	default:
-		err = errors.New("invalid token type")
-	}
-
-	if err != nil {
-		return
-	}
 	nowTime := time.Now()
 	expirationTokenTime := nowTime.Add(tokenTimeUnix)
 
 	tokenClaims := &secureDomain.Claims{
 		UserID: userID,
 		Type:   tokenType,
+		CSRF:   CSRF,
 		Role:   roleName,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTokenTime.Unix(),
 			IssuedAt:  nowTime.UTC().Unix(),
 		},
 	}
-	tokenWithClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, tokenClaims)
+	tokenWithClaims := jwt.NewWithClaims(jwt.GetSigningMethod("RS256"), tokenClaims)
 
 	// Sign and get the complete encoded token as a string using the secret
 	tokenStr, err := tokenWithClaims.SignedString(secureDomain.PrivateKey)
@@ -70,17 +50,13 @@ func GenerateJWTToken(userID int, tokenType string, roleName string) (appToken *
 
 // GetClaimsAndVerifyToken verifies the token and returns the claims
 func GetClaimsAndVerifyToken(tokenString string, tokenType string) (claims jwt.MapClaims, err error) {
-	viper.SetConfigFile("config.json")
-	if err := viper.ReadInConfig(); err != nil {
-		_ = fmt.Errorf("fatal error in config file: %s", err.Error())
-	}
-	JWTRefreshSecure := viper.GetString(TokenTypeKeyName[tokenType])
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, errorDomain.NewAppError(errors.New(fmt.Sprintf("unexpected signing method: %v", token.Header["alg"])), errorDomain.NotAuthenticated)
+			message := fmt.Sprintf("unexpected signing method: %v", token.Header["alg"])
+			return nil, errorDomain.NewAppError(errors.New(message), errorDomain.NotAuthenticated)
 		}
 
-		return []byte(JWTRefreshSecure), nil
+		return secureDomain.PublicKey, nil
 	})
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
@@ -95,10 +71,93 @@ func GetClaimsAndVerifyToken(tokenString string, tokenType string) (claims jwt.M
 
 		return claims, nil
 	}
+
 	return nil, err
 }
 
 // ReGenerateCustomJWT regenerate jwt with custom modified data
-func ReGenerateCustomJWT() {
+func ReGenerateCustomJWT(tokenString string, oldClaims *secureDomain.Claims) (newClaims *secureDomain.Claims, err error) {
+	_, err = GetClaimsAndVerifyToken(tokenString, oldClaims.Type)
+	if err != nil {
+		err = errorDomain.NewAppError(errors.New("error generate jwt"), errorDomain.TokenGeneratorError)
+		return
+	}
 
+	if oldClaims.UserID == 0 {
+		err = errorDomain.NewAppError(errors.New("error generate jwt"), errorDomain.TokenGeneratorError)
+		return
+	}
+
+	if oldClaims.Type == "" {
+		err = errorDomain.NewAppError(errors.New("error generate jwt"), errorDomain.TokenGeneratorError)
+		return
+	}
+
+	if oldClaims.Role == "" {
+		err = errorDomain.NewAppError(errors.New("error generate jwt"), errorDomain.TokenGeneratorError)
+		return
+	}
+
+	newClaims.Type = oldClaims.Type
+	newClaims.UserID = oldClaims.UserID
+	newClaims.Role = oldClaims.Role
+
+	if oldClaims.CSRF != "" {
+		newClaims.CSRF = oldClaims.CSRF
+	} else {
+		var newCSRF string
+		newCSRF, err = secureDomain.GenerateCSRF(32)
+
+		if err != nil {
+			err = errorDomain.NewAppError(errors.New(newCSRF), errorDomain.NotAuthenticated)
+			return
+		}
+
+		newClaims.CSRF = newCSRF
+	}
+
+	// jwt.StandardClaims
+	if oldClaims.Audience != "" {
+		newClaims.Audience = oldClaims.Audience
+	}
+
+	if oldClaims.ExpiresAt != 0 {
+		newClaims.ExpiresAt = oldClaims.ExpiresAt
+	} else {
+		var tokenTimeUnix time.Duration
+		tokenTimeUnix, err = getTimeExpire(oldClaims.Type)
+
+		if err != nil {
+			err = errorDomain.NewAppError(errors.New("error generate jwt"), errorDomain.TokenGeneratorError)
+			return
+		}
+
+		newClaims.ExpiresAt = time.Now().Add(tokenTimeUnix).Unix()
+	}
+
+	if oldClaims.IssuedAt != 0 {
+		newClaims.IssuedAt = oldClaims.IssuedAt
+	}
+
+	if oldClaims.NotBefore != 0 {
+		newClaims.NotBefore = oldClaims.NotBefore
+	}
+
+	if oldClaims.NotBefore != 0 {
+		newClaims.NotBefore = oldClaims.NotBefore
+	}
+
+	if oldClaims.Issuer != "" {
+		newClaims.Issuer = oldClaims.Issuer
+	}
+
+	if oldClaims.Subject != "" {
+		newClaims.Subject = oldClaims.Subject
+	}
+
+	tokenWithClaims := jwt.NewWithClaims(jwt.GetSigningMethod("RS256"), newClaims)
+
+	// Sign and get the complete encoded token as a string using the secret
+	_, err = tokenWithClaims.SignedString(secureDomain.PrivateKey)
+	return
 }

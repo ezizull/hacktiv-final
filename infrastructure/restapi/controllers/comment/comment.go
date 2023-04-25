@@ -33,7 +33,7 @@ type Controller struct {
 // @Router /comment [post]
 func (c *Controller) NewComment(ctx *gin.Context) {
 	// Get your object from the context
-	authData := ctx.MustGet("Auth").(secureDomain.Claims)
+	authData := ctx.MustGet("Authorized").(secureDomain.Claims)
 
 	var request commentDomain.NewComment
 	if err := controllers.BindJSON(ctx, &request); err != nil {
@@ -113,7 +113,7 @@ func (c *Controller) GetAllComments(ctx *gin.Context) {
 // @Router /comment [get]
 func (c *Controller) GetAllOwnComments(ctx *gin.Context) {
 	// Get your object from the context
-	authData := ctx.MustGet("Auth").(secureDomain.Claims)
+	authData := ctx.MustGet("Authorized").(secureDomain.Claims)
 
 	pageStr := ctx.DefaultQuery("page", "1")
 	limitStr := ctx.DefaultQuery("limit", "20")
@@ -181,7 +181,7 @@ func (c *Controller) GetCommentByID(ctx *gin.Context) {
 // @Router /comment/{comment_id} [get]
 func (c *Controller) UpdateComment(ctx *gin.Context) {
 	// Get your object from the context
-	authData := ctx.MustGet("Auth").(secureDomain.Claims)
+	authData := ctx.MustGet("Authorized").(secureDomain.Claims)
 
 	commentID, err := strconv.Atoi(ctx.Param("id"))
 	if err != nil {

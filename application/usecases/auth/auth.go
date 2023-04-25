@@ -8,6 +8,7 @@ import (
 
 	"hacktiv/final-project/application/security/jwt"
 	errorDomain "hacktiv/final-project/domain/errors"
+	secureDomain "hacktiv/final-project/domain/security"
 	userDomain "hacktiv/final-project/domain/user"
 
 	userRepository "hacktiv/final-project/infrastructure/repository/postgres/user"
@@ -36,11 +37,17 @@ func (s *Service) Login(user userDomain.LoginUser) (*userDomain.SecurityAuthenti
 		return &userDomain.SecurityAuthenticatedUser{}, errorDomain.NewAppError(errors.New("email or password does not match"), errorDomain.NotAuthorized)
 	}
 
-	accessTokenClaims, err := jwt.GenerateJWTToken(userRole.ID, "access", userRole.Role.Name)
+	newCSRF, err := secureDomain.GenerateCSRF(32)
+	if err != nil {
+		err = errorDomain.NewAppError(errors.New(newCSRF), errorDomain.NotAuthenticated)
+		return &userDomain.SecurityAuthenticatedUser{}, errorDomain.NewAppError(errors.New("error genereate csrf"), errorDomain.NotAuthorized)
+	}
+
+	accessTokenClaims, err := jwt.GenerateJWTToken(userRole.ID, "access", userRole.Role.Name, newCSRF)
 	if err != nil {
 		return &userDomain.SecurityAuthenticatedUser{}, err
 	}
-	refreshTokenClaims, err := jwt.GenerateJWTToken(userRole.ID, "refresh", userRole.Role.Name)
+	refreshTokenClaims, err := jwt.GenerateJWTToken(userRole.ID, "refresh", userRole.Role.Name, newCSRF)
 	if err != nil {
 		return &userDomain.SecurityAuthenticatedUser{}, err
 	}
@@ -62,15 +69,17 @@ func (s *Service) AccessTokenByRefreshToken(refreshToken string) (*userDomain.Se
 
 	userMap := map[string]interface{}{"id": claimsMap["user_id"]}
 	userRole, err := s.UserRepository.GetWithRoleByMap(userMap)
+	if err != nil || userRole.ID == 0 {
+		return nil, errorDomain.NewAppError(errors.New(errorDomain.TokenGeneratorErrorMessage), errorDomain.NotFound)
+	}
+
+	newCSRF, err := secureDomain.GenerateCSRF(32)
 	if err != nil {
-		return nil, err
-
-	}
-	if userRole.ID == 0 {
-		return &userDomain.SecurityAuthenticatedUser{}, errorDomain.NewAppError(errors.New(errorDomain.TokenGeneratorErrorMessage), errorDomain.NotFound)
+		err = errorDomain.NewAppError(errors.New(newCSRF), errorDomain.NotAuthenticated)
+		return &userDomain.SecurityAuthenticatedUser{}, errorDomain.NewAppError(errors.New("error genereate csrf"), errorDomain.NotAuthorized)
 	}
 
-	accessTokenClaims, err := jwt.GenerateJWTToken(userRole.ID, "access", userRole.Role.Name)
+	accessTokenClaims, err := jwt.GenerateJWTToken(userRole.ID, "access", userRole.Role.Name, newCSRF)
 	if err != nil {
 		return &userDomain.SecurityAuthenticatedUser{}, err
 	}

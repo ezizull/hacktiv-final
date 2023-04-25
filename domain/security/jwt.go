@@ -17,6 +17,7 @@ type AppToken struct {
 type Claims struct {
 	UserID int    `json:"user_id"`
 	Type   string `json:"type"`
+	CSRF   string `json:"csrf"`
 	Role   string `json:"role"`
 	jwt.StandardClaims
 }

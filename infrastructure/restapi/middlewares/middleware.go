@@ -2,7 +2,6 @@
 package middlewares
 
 import (
-	"fmt"
 	"net/http"
 
 	"hacktiv/final-project/utils/lists"
@@ -11,21 +10,13 @@ import (
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
-	"github.com/spf13/viper"
 )
 
 // AuthJWTMiddleware is a function that validates the jwt token
 func AuthJWTMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		viper.SetConfigFile("config.json")
-		if err := viper.ReadInConfig(); err != nil {
-			_ = fmt.Errorf("fatal error in config file: %s", err.Error())
-		}
 
-		JWTAccessSecure := viper.GetString("Secure.JWTAccessSecure")
 		tokenString := c.GetHeader("Authorization")
-		signature := []byte(JWTAccessSecure)
-
 		if tokenString == "" {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Token not provided"})
 			c.Abort()
@@ -34,7 +25,7 @@ func AuthJWTMiddleware() gin.HandlerFunc {
 
 		claims := &secureDomain.Claims{}
 		_, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
-			return signature, nil
+			return secureDomain.PublicKey, nil
 		})
 
 		if err != nil {
@@ -43,8 +34,7 @@ func AuthJWTMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		c.Set("Auth", *claims)
-
+		c.Set("Authorized", *claims)
 		c.Next()
 	}
 }
@@ -53,7 +43,7 @@ func AuthJWTMiddleware() gin.HandlerFunc {
 func AuthRoleMiddleware(validRoles []string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Get your object from the context
-		authData := c.MustGet("Auth").(secureDomain.Claims)
+		authData := c.MustGet("Authorized").(secureDomain.Claims)
 
 		if authData.Role == "" {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "You are not authorized"})
