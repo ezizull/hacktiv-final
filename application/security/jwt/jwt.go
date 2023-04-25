@@ -60,6 +60,8 @@ func GetClaimsAndVerifyToken(tokenString string, tokenType string) (claims jwt.M
 	})
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		fmt.Println("check", claims)
+
 		if claims["type"] != tokenType {
 			return nil, errorDomain.NewAppError(errors.New("invalid token type"), errorDomain.NotAuthenticated)
 		}

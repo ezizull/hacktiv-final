@@ -23,13 +23,17 @@ func (s *Service) GetAll() (*[]userDomain.User, error) {
 }
 
 // GetWithRole is a function that returns a user with role by id
-func (s *Service) GetWithRole(id int) (*userDomain.UserRole, error) {
-	return s.UserRepository.GetWithRole(id)
+func (s *Service) GetWithRole(id int) (responUserRole *userDomain.ResponseUserRole, err error) {
+	userRole, err := s.UserRepository.GetWithRole(id)
+	responUserRole = userRole.UserToResponseMapper()
+	return
 }
 
 // GetByID is a function that returns a user by id
-func (s *Service) GetByID(id int) (*userDomain.User, error) {
-	return s.UserRepository.GetByID(id)
+func (s *Service) GetByID(id int) (responUser *userDomain.ResponseUser, err error) {
+	user, err := s.UserRepository.GetByID(id)
+	responUser = user.DomainToResponseMapper()
+	return
 }
 
 // Create is a function that creates a new user
