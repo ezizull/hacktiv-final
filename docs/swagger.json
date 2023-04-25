@@ -631,7 +631,7 @@
                 },
                 "deleted_at": {
                     "type": "string",
-                    "example": "2021-02-24 20:19:39"
+                    "example": "null"
                 },
                 "id": {
                     "type": "integer",
@@ -775,7 +775,7 @@
                 },
                 "deleted_at": {
                     "type": "string",
-                    "example": "2021-02-24 20:19:39"
+                    "example": "null"
                 },
                 "id": {
                     "type": "integer",
@@ -814,7 +814,7 @@
                 },
                 "deleted_at": {
                     "type": "string",
-                    "example": "2021-02-24 20:19:39"
+                    "example": "null"
                 },
                 "id": {
                     "type": "integer",
@@ -1010,7 +1010,7 @@
                 },
                 "deleted_at": {
                     "type": "string",
-                    "example": "2021-02-24 20:19:39"
+                    "example": "null"
                 },
                 "email": {
                     "type": "string",
@@ -1039,7 +1039,7 @@
                 },
                 "deleted_at": {
                     "type": "string",
-                    "example": "2021-02-24 20:19:39"
+                    "example": "null"
                 },
                 "id": {
                     "type": "integer"

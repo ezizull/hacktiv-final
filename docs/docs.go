@@ -643,7 +643,7 @@ const docTemplate = `{
                 },
                 "deleted_at": {
                     "type": "string",
-                    "example": "2021-02-24 20:19:39"
+                    "example": "null"
                 },
                 "id": {
                     "type": "integer",
@@ -787,7 +787,7 @@ const docTemplate = `{
                 },
                 "deleted_at": {
                     "type": "string",
-                    "example": "2021-02-24 20:19:39"
+                    "example": "null"
                 },
                 "id": {
                     "type": "integer",
@@ -826,7 +826,7 @@ const docTemplate = `{
                 },
                 "deleted_at": {
                     "type": "string",
-                    "example": "2021-02-24 20:19:39"
+                    "example": "null"
                 },
                 "id": {
                     "type": "integer",
@@ -1022,7 +1022,7 @@ const docTemplate = `{
                 },
                 "deleted_at": {
                     "type": "string",
-                    "example": "2021-02-24 20:19:39"
+                    "example": "null"
                 },
                 "email": {
                     "type": "string",
@@ -1051,7 +1051,7 @@ const docTemplate = `{
                 },
                 "deleted_at": {
                     "type": "string",
-                    "example": "2021-02-24 20:19:39"
+                    "example": "null"
                 },
                 "id": {
                     "type": "integer"

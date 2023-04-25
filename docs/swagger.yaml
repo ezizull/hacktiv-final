@@ -25,7 +25,7 @@ definitions:
         example: "2021-02-24 20:19:39"
         type: string
       deleted_at:
-        example: "2021-02-24 20:19:39"
+        example: "null"
         type: string
       id:
         example: 1099
@@ -123,7 +123,7 @@ definitions:
         example: "2021-02-24 20:19:39"
         type: string
       deleted_at:
-        example: "2021-02-24 20:19:39"
+        example: "null"
         type: string
       id:
         example: 1099
@@ -151,7 +151,7 @@ definitions:
         example: "2021-02-24 20:19:39"
         type: string
       deleted_at:
-        example: "2021-02-24 20:19:39"
+        example: "null"
         type: string
       id:
         example: 1099
@@ -288,7 +288,7 @@ definitions:
         example: "2021-02-24 20:19:39"
         type: string
       deleted_at:
-        example: "2021-02-24 20:19:39"
+        example: "null"
         type: string
       email:
         example: some@mail.com
@@ -311,7 +311,7 @@ definitions:
         example: "2021-02-24 20:19:39"
         type: string
       deleted_at:
-        example: "2021-02-24 20:19:39"
+        example: "null"
         type: string
       id:
         type: integer
