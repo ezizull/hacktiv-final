@@ -3,7 +3,6 @@ package auth
 
 import (
 	"errors"
-	"fmt"
 	"time"
 
 	"hacktiv/final-project/application/security/jwt"
@@ -23,7 +22,7 @@ type Service struct {
 func (s *Service) Login(user userDomain.LoginUser) (*userDomain.SecurityAuthenticatedUser, error) {
 	userMap := map[string]interface{}{"email": user.Email}
 	userRole, err := s.UserRepository.GetWithRoleByMap(userMap)
-	fmt.Println("check ", userRole)
+
 	if err != nil {
 		return &userDomain.SecurityAuthenticatedUser{}, err
 	}
