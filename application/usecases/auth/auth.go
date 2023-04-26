@@ -60,8 +60,8 @@ func (s *Service) Login(user userDomain.LoginUser) (*userDomain.SecurityAuthenti
 }
 
 // AccessTokenByRefreshToken implements the Access Token By Refresh Token use case
-func (s *Service) AccessTokenByRefreshToken(refreshToken string) (*userDomain.SecurityAuthenticatedUser, error) {
-	claimsMap, err := jwt.GetClaimsAndVerifyToken(refreshToken, "refresh")
+func (s *Service) AccessTokenByRefreshToken(refreshToken string, oldCSRF string) (*userDomain.SecurityAuthenticatedUser, error) {
+	claimsMap, err := jwt.GetClaimsAndVerifyToken(refreshToken, "refresh", oldCSRF)
 	if err != nil {
 		return nil, err
 	}

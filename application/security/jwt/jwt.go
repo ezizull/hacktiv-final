@@ -39,7 +39,6 @@ func GenerateJWTToken(userID int, tokenType string, roleName string, CSRF string
 		return
 	}
 
-	secureDomain.CSRF = &CSRF
 	appToken = &secureDomain.AppToken{
 		Token:          tokenStr,
 		TokenType:      tokenType,
@@ -50,11 +49,7 @@ func GenerateJWTToken(userID int, tokenType string, roleName string, CSRF string
 }
 
 // GetClaimsAndVerifyToken verifies the token and returns the claims
-func GetClaimsAndVerifyToken(tokenString string, tokenType string) (claims jwt.MapClaims, err error) {
-	if secureDomain.CSRF == nil {
-		return nil, errorDomain.NewAppError(errors.New("please login again"), errorDomain.NotAuthenticated)
-	}
-
+func GetClaimsAndVerifyToken(tokenString string, tokenType string, oldCSRF string) (claims jwt.MapClaims, err error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
 			message := fmt.Sprintf("unexpected signing method: %v", token.Header["alg"])
@@ -65,10 +60,6 @@ func GetClaimsAndVerifyToken(tokenString string, tokenType string) (claims jwt.M
 	})
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		if claims["csrf"] != *secureDomain.CSRF {
-			return nil, errorDomain.NewAppError(errors.New("invalid csrf"), errorDomain.NotAuthenticated)
-		}
-
 		if claims["type"] != tokenType {
 			return nil, errorDomain.NewAppError(errors.New("invalid token type"), errorDomain.NotAuthenticated)
 		}
@@ -86,12 +77,6 @@ func GetClaimsAndVerifyToken(tokenString string, tokenType string) (claims jwt.M
 
 // ReGenerateCustomJWT regenerate jwt with custom modified data
 func ReGenerateCustomJWT(tokenString string, oldClaims *secureDomain.Claims) (newClaims *secureDomain.Claims, err error) {
-	_, err = GetClaimsAndVerifyToken(tokenString, oldClaims.Type)
-	if err != nil {
-		err = errorDomain.NewAppError(errors.New("error generate jwt"), errorDomain.TokenGeneratorError)
-		return
-	}
-
 	if oldClaims.UserID == 0 {
 		err = errorDomain.NewAppError(errors.New("error generate jwt"), errorDomain.TokenGeneratorError)
 		return
@@ -168,7 +153,6 @@ func ReGenerateCustomJWT(tokenString string, oldClaims *secureDomain.Claims) (ne
 
 	// Sign and get the complete encoded token as a string using the secret
 	_, err = tokenWithClaims.SignedString(secureDomain.PrivateKey)
-	secureDomain.CSRF = &newClaims.CSRF
 
 	return
 }
