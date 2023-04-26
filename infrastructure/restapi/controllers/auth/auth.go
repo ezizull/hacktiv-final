@@ -44,10 +44,7 @@ func (c *Controller) Login(ctx *gin.Context) {
 		return
 	}
 
-	// host := strings.Split(ctx.Request.Host, ":")[0] // remove the port if it exists
-	// ctx.SetCookie("X-CSRF", "value", int(authDataUser.Security.ExpirationAccessDateTime.Second()), "/", host, false, true)
-
-	ctx.JSON(http.StatusOK, authDataUser.CustomResponse())
+	ctx.JSON(http.StatusOK, authDataUser)
 }
 
 // GetAccessTokenByRefreshToken godoc
@@ -67,13 +64,6 @@ func (c *Controller) GetAccessTokenByRefreshToken(ctx *gin.Context) {
 		_ = ctx.Error(appError)
 		return
 	}
-
-	// CSRF, err := ctx.Cookie("X-CSRF")
-	// if err != nil {
-	// 	appError := errorDomain.NewAppError(err, errorDomain.TokenGeneratorError)
-	// 	_ = ctx.Error(appError)
-	// 	return
-	// }
 
 	authDataUser, err := c.AuthService.AccessTokenByRefreshToken(request.RefreshToken, "CSRF")
 	if err != nil {

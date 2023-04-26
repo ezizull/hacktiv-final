@@ -28,15 +28,3 @@ func ArrayDomainToResponseMapper(users *[]User) *[]ResponseUser {
 	}
 	return &usersResponse
 }
-
-func (secureAuth *SecurityAuthenticatedUser) CustomResponse() *SecurityAuthenticatedUser {
-	return &SecurityAuthenticatedUser{
-		Data: secureAuth.Data,
-		Security: DataSecurityAuthenticated{
-			JWTAccessToken:            secureAuth.Security.JWTAccessToken,
-			JWTRefreshToken:           secureAuth.Security.JWTRefreshToken,
-			ExpirationAccessDateTime:  secureAuth.Security.ExpirationAccessDateTime,
-			ExpirationRefreshDateTime: secureAuth.Security.ExpirationRefreshDateTime,
-		},
-	}
-}

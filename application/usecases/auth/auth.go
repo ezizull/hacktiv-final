@@ -42,11 +42,11 @@ func (s *Service) Login(user userDomain.LoginUser) (*userDomain.SecurityAuthenti
 		return &userDomain.SecurityAuthenticatedUser{}, errorDomain.NewAppError(errors.New("error genereate csrf"), errorDomain.NotAuthorized)
 	}
 
-	accessTokenClaims, err := jwt.GenerateJWTToken(userRole.ID, "access", userRole.Role.Name, newCSRF)
+	accessTokenClaims, err := jwt.GenerateJWTToken(userRole.ID, "access", userRole.Role.Name)
 	if err != nil {
 		return &userDomain.SecurityAuthenticatedUser{}, err
 	}
-	refreshTokenClaims, err := jwt.GenerateJWTToken(userRole.ID, "refresh", userRole.Role.Name, newCSRF)
+	refreshTokenClaims, err := jwt.GenerateJWTToken(userRole.ID, "refresh", userRole.Role.Name)
 	if err != nil {
 		return &userDomain.SecurityAuthenticatedUser{}, err
 	}
@@ -61,7 +61,7 @@ func (s *Service) Login(user userDomain.LoginUser) (*userDomain.SecurityAuthenti
 
 // AccessTokenByRefreshToken implements the Access Token By Refresh Token use case
 func (s *Service) AccessTokenByRefreshToken(refreshToken string, oldCSRF string) (*userDomain.SecurityAuthenticatedUser, error) {
-	claimsMap, err := jwt.GetClaimsAndVerifyToken(refreshToken, "refresh", oldCSRF)
+	claimsMap, err := jwt.GetClaimsAndVerifyToken(refreshToken, "refresh")
 	if err != nil {
 		return nil, err
 	}
@@ -72,13 +72,7 @@ func (s *Service) AccessTokenByRefreshToken(refreshToken string, oldCSRF string)
 		return nil, errorDomain.NewAppError(errors.New(errorDomain.TokenGeneratorErrorMessage), errorDomain.NotFound)
 	}
 
-	newCSRF, err := secureDomain.GenerateCSRF(32)
-	if err != nil {
-		err = errorDomain.NewAppError(errors.New(newCSRF), errorDomain.NotAuthenticated)
-		return &userDomain.SecurityAuthenticatedUser{}, errorDomain.NewAppError(errors.New("error genereate csrf"), errorDomain.NotAuthorized)
-	}
-
-	accessTokenClaims, err := jwt.GenerateJWTToken(userRole.ID, "access", userRole.Role.Name, newCSRF)
+	accessTokenClaims, err := jwt.GenerateJWTToken(userRole.ID, "access", userRole.Role.Name)
 	if err != nil {
 		return &userDomain.SecurityAuthenticatedUser{}, err
 	}
